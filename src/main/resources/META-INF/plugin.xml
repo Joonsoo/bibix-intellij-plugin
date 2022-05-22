@@ -1,18 +1,52 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <id>com.github.joonsoo.bibixintellijplugin</id>
-    <name>bibix-intellij-plugin</name>
+    <name>BibixIntellijPlugin</name>
     <vendor>joonsoo</vendor>
+    <version>0.0.1</version>
 
-    <depends>com.intellij.modules.platform</depends>
+<!--    <depends>com.intellij.modules.lang</depends>-->
+<!--    <depends>com.intellij.modules.platform</depends>-->
+<!--    <depends>com.intellij.modules.externalSystem</depends>-->
+    <depends>com.intellij.modules.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.joonsoo.bibixintellijplugin.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.joonsoo.bibixintellijplugin.services.MyProjectService"/>
+        <externalSystemManager implementation="com.giyeok.bibix.intellijplugin.system.BibixManager"/>
+        <externalProjectDataService implementation="com.giyeok.bibix.intellijplugin.services.BibixProjectDataService"/>
+        <externalProjectDataService implementation="com.giyeok.bibix.intellijplugin.services.BibixModuleDataService"/>
+        <externalProjectDataService
+                implementation="com.giyeok.bibix.intellijplugin.services.BibixContentRootDataSource"/>
+        <!--        <externalProjectDataService implementation="com.giyeok.bibix.intellijplugin.services.BibixProjectDataService"/>-->
+        <!--        <externalProjectDataService-->
+        <!--                implementation="com.giyeok.bibix.intellijplugin.services.BibixSourceSetDataService"/>-->
+        <projectImportProvider
+                implementation="com.giyeok.bibix.intellijplugin.projectImport.BibixProjectImportProvider"/>
+        <projectService serviceImplementation="com.giyeok.bibix.intellijplugin.settings.BibixSettings"/>
+        <projectService serviceImplementation="com.giyeok.bibix.intellijplugin.settings.BibixProjectSettings"/>
+        <projectService serviceImplementation="com.giyeok.bibix.intellijplugin.settings.BibixExecutionSettings"/>
+        <projectService serviceImplementation="com.giyeok.bibix.intellijplugin.settings.BibixLocalSettings"/>
+        <projectOpenProcessor id="bibix"
+                              implementation="com.giyeok.bibix.intellijplugin.projectOpen.BibixProjectOpenProcessor"/>
+        <projectTaskRunner implementation="com.giyeok.bibix.intellijplugin.taskRunner.BibixProjectTaskRunner"
+                           id="gradle" order="first"/>
+
+        <toolWindow id="Bibix" anchor="right" icon="BibixIcons.Bibix"
+                    factoryClass="com.giyeok.bibix.intellijplugin.ui.BibixToolWindowFactory"/>
     </extensions>
 
-    <applicationListeners>
-        <listener class="com.github.joonsoo.bibixintellijplugin.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
-    </applicationListeners>
+    <!--    <applicationListeners>-->
+    <!--        <listener class="com.giyeok.bibix.intellijplugin.listeners.MyProjectManagerListener"-->
+    <!--                  topic="com.intellij.openapi.project.ProjectManagerListener"/>-->
+    <!--    </applicationListeners>-->
+
+    <actions>
+        <action id="Bibix.ExecuteTask" class="com.giyeok.bibix.intellijplugin.action.BibixExecuteTaskAction"
+                icon="BibixIcons.Bibix"/>
+        <action id="Bibix.ImportExternalProject"
+                class="com.giyeok.bibix.intellijplugin.action.ImportFromBuildFileAction"
+                icon="BibixIcons.Bibix">
+            <add-to-group group-id="ProjectViewPopupMenuSettingsGroup" anchor="last"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
+    </actions>
 </idea-plugin>

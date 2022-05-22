@@ -1,4 +1,4 @@
-package com.github.joonsoo.bibixintellijplugin
+package com.giyeok.bibix.intellijplugin
 
 import com.intellij.DynamicBundle
 import org.jetbrains.annotations.NonNls
@@ -7,7 +7,7 @@ import org.jetbrains.annotations.PropertyKey
 @NonNls
 private const val BUNDLE = "messages.MyBundle"
 
-object MyBundle : DynamicBundle(BUNDLE) {
+object BibixBundle : DynamicBundle(BUNDLE) {
 
     @Suppress("SpreadOperator")
     @JvmStatic
