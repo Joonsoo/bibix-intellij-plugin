@@ -1,9 +1,7 @@
-package com.giyeok.bibix.intellijplugin.projectImport
+package com.giyeok.bibix.intellijplugin.projectOpen
 
 import com.giyeok.bibix.intellijplugin.settings.BibixProjectSettings
 import com.giyeok.bibix.intellijplugin.settings.BibixSettings
-import com.giyeok.bibix.intellijplugin.projectOpen.BibixOpenProjectProvider
-import com.giyeok.bibix.intellijplugin.setupBibixJvm
 import com.intellij.openapi.externalSystem.util.ExternalSystemBundle
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
@@ -48,9 +46,15 @@ fun createLinkSettings(projectDirectory: Path, project: Project): BibixProjectSe
   val bibixProjectSettings = BibixProjectSettings()
   bibixProjectSettings.setupBibixProjectSettings(project, projectDirectory)
 
-  val bibixVersion = bibixProjectSettings.resolveBibixVersion()
-  setupBibixJvm(project, bibixProjectSettings, bibixVersion)
+  setupBibixJvm(project, bibixProjectSettings)
   return bibixProjectSettings
+}
+
+fun setupBibixJvm(
+  project: Project,
+  projectSettings: BibixProjectSettings,
+) {
+  // TODO
 }
 
 fun updateBibixJvm(project: Project, externalProjectPath: String) {

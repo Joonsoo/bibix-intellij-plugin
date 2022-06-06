@@ -17,8 +17,8 @@ class BibixTaskManager : ExternalSystemTaskManager<BibixExecutionSettings> {
     jvmParametersSetup: String?,
     listener: ExternalSystemTaskNotificationListener
   ) {
-    // TODO
-    LOG.error("executeTasks $id $taskNames $projectPath")
+    LOG.warn("executeTasks, Hahaha")
+    super.executeTasks(id, taskNames, projectPath, settings, jvmParametersSetup, listener)
   }
 
   override fun cancelTask(

@@ -1,14 +1,15 @@
 package com.giyeok.bibix.intellijplugin.projectOpen
 
-import com.giyeok.bibix.intellijplugin.BibixConstants.SYSTEM_ID
+import com.giyeok.bibix.intellijplugin.BibixConstants
 import com.giyeok.bibix.intellijplugin.settings.BibixSettings
-import com.giyeok.bibix.intellijplugin.projectImport.createLinkSettings
-import com.giyeok.bibix.intellijplugin.projectImport.updateBibixJvm
+import com.giyeok.bibix.intellijplugin.projectOpen.createLinkSettings
+import com.giyeok.bibix.intellijplugin.projectOpen.updateBibixJvm
 import com.giyeok.bibix.intellijplugin.util.validateJavaHome
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.externalSystem.importing.AbstractOpenProjectProvider
 import com.intellij.openapi.externalSystem.importing.ImportSpecBuilder
 import com.intellij.openapi.externalSystem.model.DataNode
+import com.intellij.openapi.externalSystem.model.ProjectSystemId
 import com.intellij.openapi.externalSystem.model.internal.InternalExternalProjectInfo
 import com.intellij.openapi.externalSystem.model.project.ProjectData
 import com.intellij.openapi.externalSystem.service.execution.ProgressExecutionMode
@@ -26,8 +27,10 @@ import com.intellij.openapi.vfs.VirtualFile
 import java.nio.file.Path
 
 class BibixOpenProjectProvider : AbstractOpenProjectProvider() {
+  override val systemId: ProjectSystemId = BibixConstants.SYSTEM_ID
+
   override fun isProjectFile(file: VirtualFile): Boolean {
-    return !file.isDirectory && file.extension == "bbx"
+    return !file.isDirectory && file.name == "build.bbx"
   }
 
   override fun linkAndRefreshProject(projectDirectory: Path, project: Project) {
@@ -35,17 +38,17 @@ class BibixOpenProjectProvider : AbstractOpenProjectProvider() {
 
     attachBibixProjectAndRefresh(bibixProjectSettings, project)
 
-    validateJavaHome(project, projectDirectory, bibixProjectSettings.resolveBibixVersion())
+    validateJavaHome(project, projectDirectory)
   }
 
   private fun attachBibixProjectAndRefresh(settings: ExternalProjectSettings, project: Project) {
     val externalProjectPath = settings.externalProjectPath
-    ExternalSystemApiUtil.getSettings(project, SYSTEM_ID).linkProject(settings)
+    ExternalSystemApiUtil.getSettings(project, BibixConstants.SYSTEM_ID).linkProject(settings)
     if (Registry.`is`("external.system.auto.import.disabled")) return
 
     ExternalSystemUtil.refreshProject(
       externalProjectPath,
-      ImportSpecBuilder(project, SYSTEM_ID)
+      ImportSpecBuilder(project, BibixConstants.SYSTEM_ID)
         .usePreviewMode()
         .use(ProgressExecutionMode.MODAL_SYNC)
     )
@@ -53,7 +56,7 @@ class BibixOpenProjectProvider : AbstractOpenProjectProvider() {
     ExternalProjectsManagerImpl.getInstance(project).runWhenInitialized {
       ExternalSystemUtil.refreshProject(
         externalProjectPath,
-        ImportSpecBuilder(project, SYSTEM_ID).callback(
+        ImportSpecBuilder(project, BibixConstants.SYSTEM_ID).callback(
           createFinalImportCallback(project, externalProjectPath)
         )
       )
@@ -85,7 +88,11 @@ class BibixOpenProjectProvider : AbstractOpenProjectProvider() {
     if (showSelectiveImportDialog && !application.isHeadlessEnvironment) {
       application.invokeAndWait {
         val projectInfo =
-          InternalExternalProjectInfo(SYSTEM_ID, externalProjectPath, externalProject)
+          InternalExternalProjectInfo(
+            BibixConstants.SYSTEM_ID,
+            externalProjectPath,
+            externalProject
+          )
         val dialog = ExternalProjectDataSelectorDialog(project, projectInfo)
         if (dialog.hasMultipleDataToSelect()) {
           dialog.showAndGet()

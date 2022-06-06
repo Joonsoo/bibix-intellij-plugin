@@ -1,5 +1,7 @@
 package com.giyeok.bibix.intellijplugin.system
 
+import com.giyeok.bibix.daemon.BibixDaemonApiGrpcKt
+import com.giyeok.bibix.daemon.getIntellijProjectStructureReq
 import com.giyeok.bibix.intellijplugin.BibixConstants
 import com.giyeok.bibix.intellijplugin.BibixSettingsListener
 import com.giyeok.bibix.intellijplugin.settings.BibixExecutionSettings
@@ -8,44 +10,70 @@ import com.giyeok.bibix.intellijplugin.settings.BibixProjectSettings
 import com.giyeok.bibix.intellijplugin.settings.BibixSettings
 import com.intellij.execution.configurations.SimpleJavaParameters
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.externalSystem.ExternalSystemAutoImportAware
+import com.intellij.openapi.externalSystem.ExternalSystemConfigurableAware
 import com.intellij.openapi.externalSystem.ExternalSystemManager
 import com.intellij.openapi.externalSystem.model.ProjectSystemId
-import com.intellij.openapi.externalSystem.service.execution.ExternalSystemJdkUtil
 import com.intellij.openapi.externalSystem.service.project.ExternalSystemProjectResolver
 import com.intellij.openapi.externalSystem.task.ExternalSystemTaskManager
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ui.configuration.SdkLookupBuilder
-import com.intellij.openapi.roots.ui.configuration.SdkLookupDecision
-import com.intellij.openapi.roots.ui.configuration.UnknownSdkDownloadableSdkFix
-import com.intellij.openapi.roots.ui.configuration.lookupSdk
+import com.intellij.openapi.startup.StartupActivity
 import com.intellij.openapi.util.Pair
 import com.intellij.util.Function
+import io.grpc.ManagedChannelBuilder
+import kotlinx.coroutines.runBlocking
 
 open class XX
 
-class BibixManager : XX(), ExternalSystemManager<
-  BibixProjectSettings,
-  BibixSettingsListener,
-  BibixSettings,
-  BibixLocalSettings,
-  BibixExecutionSettings> {
+class BibixManager : XX(),
+  ExternalSystemAutoImportAware,
+  StartupActivity,
+//  ExternalSystemConfigurableAware,
+  ExternalSystemManager<
+    BibixProjectSettings,
+    BibixSettingsListener,
+    BibixSettings,
+    BibixLocalSettings,
+    BibixExecutionSettings> {
   val LOG: Logger = Logger.getInstance(BibixManager::class.java)
 
   override fun getSystemId(): ProjectSystemId = BibixConstants.SYSTEM_ID
 
-  override fun getSettingsProvider(): Function<Project, BibixSettings> =
-    Function { BibixSettings.getInstance(it) }
+  override fun getSettingsProvider(): Function<Project, BibixSettings> = Function { project ->
+    BibixSettings.getInstance(project)
+  }
 
   override fun getLocalSettingsProvider(): Function<Project, BibixLocalSettings> =
-    Function { BibixLocalSettings.getInstance(it) }
+    Function { project ->
+      BibixLocalSettings.getInstance(project)
+    }
 
   override fun getExecutionSettingsProvider(): Function<Pair<Project, String>, BibixExecutionSettings> =
     Function { pair: Pair<Project, String> ->
       val project = pair.first
       val projectPath = pair.second
-      BibixExecutionSettings()
+      val settings = BibixSettings.getInstance(project)
+      val projectLevelSettings = settings.getLinkedProjectSettings(projectPath)
+      val rootProjectPath =
+        if (projectLevelSettings != null) projectLevelSettings.externalProjectPath else projectPath
+
+      val channel = ManagedChannelBuilder.forAddress("localhost", 61617)
+        .usePlaintext().build()
+
+      val bibixClient = BibixDaemonApiGrpcKt.BibixDaemonApiCoroutineStub(channel)
+
+      val projectStructure = try {
+        runBlocking {
+          bibixClient.getIntellijProjectStructure(getIntellijProjectStructureReq { })
+        }
+      } finally {
+        channel.shutdown()
+      }
+
+      BibixExecutionSettings(BibixExecutionSettings.convertProject(projectPath, projectStructure))
     }
 
   override fun enhanceRemoteProcessing(parameters: SimpleJavaParameters) {
@@ -60,4 +88,16 @@ class BibixManager : XX(), ExternalSystemManager<
 
   override fun getExternalProjectDescriptor(): FileChooserDescriptor =
     FileChooserDescriptorFactory.createSingleFileDescriptor()
+
+  override fun getAffectedExternalProjectPath(
+    changedFileOrDirPath: String,
+    project: Project
+  ): String? {
+    LOG.warn("getAffectedExternalProjectPath $changedFileOrDirPath")
+    return changedFileOrDirPath
+  }
+
+  override fun runActivity(project: Project) {
+    LOG.warn("runActivity")
+  }
 }

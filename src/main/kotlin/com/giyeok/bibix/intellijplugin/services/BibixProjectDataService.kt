@@ -11,6 +11,7 @@ import com.intellij.openapi.externalSystem.service.execution.ExternalSystemJdkUt
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.externalSystem.service.project.manage.AbstractProjectDataService
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.projectRoots.ProjectJdkTable
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.roots.ui.configuration.SdkLookupBuilder
 import com.intellij.openapi.roots.ui.configuration.SdkLookupDecision
@@ -21,6 +22,15 @@ class BibixProjectDataService : AbstractProjectDataService<ProjectData, Project>
   private val LOG: Logger = Logger.getInstance(BibixProjectDataService::class.java)
 
   override fun getTargetDataKey(): Key<ProjectData> = ProjectKeys.PROJECT
+
+  override fun importData(
+    toImport: MutableCollection<out DataNode<ProjectData>>,
+    projectData: ProjectData?,
+    project: Project,
+    modelsProvider: IdeModifiableModelsProvider
+  ) {
+    LOG.warn("BibixProjectDataService")
+  }
 
   override fun postProcess(
     toImport: Collection<DataNode<ProjectData>>,
@@ -35,6 +45,7 @@ class BibixProjectDataService : AbstractProjectDataService<ProjectData, Project>
         .withSdkType(ExternalSystemJdkUtil.getJavaSdkType())
         .onDownloadableSdkSuggested { _: UnknownSdkDownloadableSdkFix? -> SdkLookupDecision.STOP }
     }
+    ProjectJdkTable.getInstance().allJdks
     if (sdk != null) {
       WriteCommandAction.runWriteCommandAction(project) {
         toImport.forEach { projectDataNode ->

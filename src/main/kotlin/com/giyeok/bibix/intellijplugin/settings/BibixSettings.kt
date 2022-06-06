@@ -20,32 +20,6 @@ class BibixSettings(project: Project) :
   }
 
   override fun subscribe(listener: ExternalSystemSettingsListener<BibixProjectSettings>) {
-    // doSubscribe()
-    doSubscribe(object : BibixSettingsListener {
-      override fun onBulkChangeStart() {
-        listener.onBulkChangeStart()
-      }
-
-      override fun onBulkChangeEnd() {
-        listener.onBulkChangeEnd()
-      }
-
-      override fun onProjectsLoaded(settings: MutableCollection<BibixProjectSettings>) {
-        listener.onProjectsLoaded(settings)
-      }
-
-      override fun onProjectsLinked(settings: MutableCollection<BibixProjectSettings>) {
-        listener.onProjectsLinked(settings)
-      }
-
-      override fun onProjectsUnlinked(linkedProjectPaths: MutableSet<String>) {
-        listener.onProjectsUnlinked(linkedProjectPaths)
-      }
-
-      override fun onProjectRenamed(oldName: String, newName: String) {
-        listener.onProjectRenamed(oldName, newName)
-      }
-    }, project)
   }
 
   override fun copyExtraSettingsFrom(settings: BibixSettings) {
@@ -53,5 +27,6 @@ class BibixSettings(project: Project) :
 
   override fun checkSettings(old: BibixProjectSettings, current: BibixProjectSettings) {
     // TODO
+    publisher.onProjectsLoaded(listOf())
   }
 }

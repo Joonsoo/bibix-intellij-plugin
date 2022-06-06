@@ -9,7 +9,7 @@ plugins {
   // Kotlin support
   id("org.jetbrains.kotlin.jvm") version "1.6.21"
   // Gradle IntelliJ Plugin
-  id("org.jetbrains.intellij") version "1.5.3"
+  id("org.jetbrains.intellij") version "1.6.0"
   // Gradle Changelog Plugin
   id("org.jetbrains.changelog") version "1.3.1"
   // Gradle Qodana Plugin
@@ -19,9 +19,30 @@ plugins {
 group = properties("pluginGroup")
 version = properties("pluginVersion")
 
+sourceSets {
+  getByName("main") {
+    java {
+      srcDir("src/generated/java")
+      srcDir("src/generated/java-grpc")
+      // kotlin???
+      srcDir("src/generated/kotlin")
+      srcDir("src/generated/kotlin-grpc")
+    }
+  }
+}
+
 // Configure project's dependencies
 repositories {
   mavenCentral()
+}
+
+dependencies {
+  implementation("com.google.protobuf:protobuf-java:3.20.1")
+  implementation("com.google.protobuf:protobuf-java-util:3.20.1")
+  implementation("com.google.protobuf:protobuf-kotlin:3.20.1")
+  implementation("io.grpc:grpc-services:1.47.0")
+  implementation("io.grpc:grpc-netty-shaded:1.47.0")
+  implementation("io.grpc:grpc-kotlin-stub:1.2.1")
 }
 
 // Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
@@ -119,4 +140,8 @@ tasks {
       )
     )
   }
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+  kotlinOptions.freeCompilerArgs += "-opt-in=org.mylibrary.OptInAnnotation"
 }
