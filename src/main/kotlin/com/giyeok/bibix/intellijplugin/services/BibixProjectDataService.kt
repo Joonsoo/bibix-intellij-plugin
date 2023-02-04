@@ -38,21 +38,21 @@ class BibixProjectDataService : AbstractProjectDataService<ProjectData, Project>
     project: Project,
     modelsProvider: IdeModifiableModelsProvider
   ) {
-    val sdkName = "1.8"
-    val sdk = lookupSdk { builder: SdkLookupBuilder ->
-      builder
-        .withSdkName(sdkName)
-        .withSdkType(ExternalSystemJdkUtil.getJavaSdkType())
-        .onDownloadableSdkSuggested { _: UnknownSdkDownloadableSdkFix? -> SdkLookupDecision.STOP }
-    }
-    ProjectJdkTable.getInstance().allJdks
-    if (sdk != null) {
-      WriteCommandAction.runWriteCommandAction(project) {
-        toImport.forEach { projectDataNode ->
-          projectDataNode.createChild(ProjectSdkData.KEY, ProjectSdkData(sdk.name))
-          ProjectRootManager.getInstance(project).projectSdk = sdk
-        }
-      }
-    }
+//    val sdkName = "1.8"
+//    val sdk = lookupSdk { builder: SdkLookupBuilder ->
+//      builder
+//        .withSdkName(sdkName)
+//        .withSdkType(ExternalSystemJdkUtil.getJavaSdkType())
+//        .onDownloadableSdkSuggested { _: UnknownSdkDownloadableSdkFix? -> SdkLookupDecision.STOP }
+//    }
+//    ProjectJdkTable.getInstance().allJdks
+//    if (sdk != null) {
+//      WriteCommandAction.runWriteCommandAction(project) {
+//        toImport.forEach { projectDataNode ->
+//          projectDataNode.createChild(ProjectSdkData.KEY, ProjectSdkData(sdk.name))
+//          ProjectRootManager.getInstance(project).projectSdk = sdk
+//        }
+//      }
+//    }
   }
 }

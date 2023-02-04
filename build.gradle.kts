@@ -7,7 +7,7 @@ plugins {
   // Java support
   id("java")
   // Kotlin support
-  id("org.jetbrains.kotlin.jvm") version "1.6.21"
+  id("org.jetbrains.kotlin.jvm") version "1.8.0"
   // Gradle IntelliJ Plugin
   id("org.jetbrains.intellij") version "1.6.0"
   // Gradle Changelog Plugin
@@ -22,11 +22,13 @@ version = properties("pluginVersion")
 sourceSets {
   getByName("main") {
     java {
-      srcDir("src/generated/java")
-      srcDir("src/generated/java-grpc")
+      srcDir("src/generated/proto/java")
+      srcDir("src/generated/grpc/java")
+    }
+    `kotlin` {
       // kotlin???
-      srcDir("src/generated/kotlin")
-      srcDir("src/generated/kotlin-grpc")
+      srcDir("src/generated/proto/kotlin")
+      srcDir("src/generated/grpc/kotlin")
     }
   }
 }
@@ -43,6 +45,7 @@ dependencies {
   implementation("io.grpc:grpc-services:1.47.0")
   implementation("io.grpc:grpc-netty-shaded:1.47.0")
   implementation("io.grpc:grpc-kotlin-stub:1.2.1")
+  implementation(fileTree("dir" to "lib", "include" to listOf("*.jar")))
 }
 
 // Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
@@ -53,7 +56,7 @@ intellij {
 
   // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
   // # Plugin Dependencies -> https://plugins.jetbrains.com/docs/intellij/plugin-dependencies.html
-  plugins.set(listOf("com.intellij.java"))
+  plugins.set(listOf("com.intellij.java", "org.intellij.scala:2022.1.16"))
 }
 
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin

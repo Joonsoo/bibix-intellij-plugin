@@ -6,6 +6,7 @@
     <version>0.0.1</version>
 
     <depends>com.intellij.modules.java</depends>
+    <depends>org.intellij.scala</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <externalSystemManager implementation="com.giyeok.bibix.intellijplugin.system.BibixManager"/>
@@ -15,6 +16,8 @@
         <externalProjectDataService implementation="com.giyeok.bibix.intellijplugin.services.BibixModuleDataService"/>
         <externalProjectDataService
                 implementation="com.giyeok.bibix.intellijplugin.services.BibixContentRootDataSource"/>
+        <externalProjectDataService
+                implementation="com.giyeok.bibix.intellijplugin.services.BibixModuleSdkDataService"/>
         <projectService serviceImplementation="com.giyeok.bibix.intellijplugin.settings.BibixSettings"/>
         <projectService serviceImplementation="com.giyeok.bibix.intellijplugin.settings.BibixProjectSettings"/>
         <projectService serviceImplementation="com.giyeok.bibix.intellijplugin.settings.BibixLocalSettings"/>

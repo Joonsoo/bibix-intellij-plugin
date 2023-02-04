@@ -1,12 +1,9 @@
 package com.giyeok.bibix.intellijplugin.system
 
-import com.giyeok.bibix.daemon.BibixDaemonApiProto
-import com.giyeok.bibix.intellijplugin.BibixConstants
 import com.giyeok.bibix.intellijplugin.settings.BibixExecutionSettings
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.externalSystem.model.DataNode
-import com.intellij.openapi.externalSystem.model.ProjectKeys
-import com.intellij.openapi.externalSystem.model.project.*
+import com.intellij.openapi.externalSystem.model.project.ProjectData
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskId
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationListener
 import com.intellij.openapi.externalSystem.service.project.ExternalSystemProjectResolver
@@ -21,6 +18,7 @@ class BibixProjectResolver : ExternalSystemProjectResolver<BibixExecutionSetting
     settings: BibixExecutionSettings?,
     listener: ExternalSystemTaskNotificationListener
   ): DataNode<ProjectData> {
+    LOG.info("resolveProjectInfo called")
     return settings!!.projectDataNode
   }
 

@@ -33,12 +33,32 @@ class BibixOpenProjectProvider : AbstractOpenProjectProvider() {
     return !file.isDirectory && file.name == "build.bbx"
   }
 
-  override fun linkAndRefreshProject(projectDirectory: Path, project: Project) {
-    val bibixProjectSettings = createLinkSettings(projectDirectory, project)
+//  override fun linkAndRefreshProject(projectDirectory: Path, project: Project) {
+//    val bibixProjectSettings = createLinkSettings(projectDirectory, project)
+//
+//    attachBibixProjectAndRefresh(bibixProjectSettings, project)
+//
+//    validateJavaHome(project, projectDirectory)
+//  }
+
+  override fun canOpenProject(file: VirtualFile): Boolean {
+    return super.canOpenProject(file)
+  }
+
+  override fun openProject(
+    projectFile: VirtualFile,
+    projectToClose: Project?,
+    forceOpenInNewFrame: Boolean
+  ): Project? {
+    return super.openProject(projectFile, projectToClose, forceOpenInNewFrame)
+  }
+
+  override fun linkToExistingProject(projectFile: VirtualFile, project: Project) {
+    val bibixProjectSettings = createLinkSettings(projectFile.toNioPath(), project)
 
     attachBibixProjectAndRefresh(bibixProjectSettings, project)
 
-    validateJavaHome(project, projectDirectory)
+    validateJavaHome(project, projectFile.toNioPath())
   }
 
   private fun attachBibixProjectAndRefresh(settings: ExternalProjectSettings, project: Project) {

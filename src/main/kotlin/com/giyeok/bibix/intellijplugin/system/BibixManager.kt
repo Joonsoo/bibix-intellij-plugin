@@ -11,19 +11,17 @@ import com.giyeok.bibix.intellijplugin.settings.BibixSettings
 import com.intellij.execution.configurations.SimpleJavaParameters
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.externalSystem.ExternalSystemAutoImportAware
-import com.intellij.openapi.externalSystem.ExternalSystemConfigurableAware
 import com.intellij.openapi.externalSystem.ExternalSystemManager
 import com.intellij.openapi.externalSystem.model.ProjectSystemId
 import com.intellij.openapi.externalSystem.service.project.ExternalSystemProjectResolver
 import com.intellij.openapi.externalSystem.task.ExternalSystemTaskManager
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
-import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.StartupActivity
 import com.intellij.openapi.util.Pair
 import com.intellij.util.Function
-import io.grpc.ManagedChannelBuilder
+import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder
 import kotlinx.coroutines.runBlocking
 
 open class XX
@@ -60,8 +58,9 @@ class BibixManager : XX(),
       val rootProjectPath =
         if (projectLevelSettings != null) projectLevelSettings.externalProjectPath else projectPath
 
-      val channel = ManagedChannelBuilder.forAddress("localhost", 61617)
-        .usePlaintext().build()
+//      val channel = ManagedChannelBuilder.forAddress("localhost", 61617)
+//        .usePlaintext().build()
+      val channel = NettyChannelBuilder.forAddress("localhost", 61617).usePlaintext().build()
 
       val bibixClient = BibixDaemonApiGrpcKt.BibixDaemonApiCoroutineStub(channel)
 
