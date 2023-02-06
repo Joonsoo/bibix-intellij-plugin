@@ -9,11 +9,16 @@ import io.grpc.MethodDescriptor
 import io.grpc.ServerServiceDefinition
 import io.grpc.ServerServiceDefinition.builder
 import io.grpc.ServiceDescriptor
+import io.grpc.Status
 import io.grpc.Status.UNIMPLEMENTED
 import io.grpc.StatusException
 import io.grpc.kotlin.AbstractCoroutineServerImpl
 import io.grpc.kotlin.AbstractCoroutineStub
+import io.grpc.kotlin.ClientCalls
+import io.grpc.kotlin.ClientCalls.serverStreamingRpc
 import io.grpc.kotlin.ClientCalls.unaryRpc
+import io.grpc.kotlin.ServerCalls
+import io.grpc.kotlin.ServerCalls.serverStreamingServerMethodDefinition
 import io.grpc.kotlin.ServerCalls.unaryServerMethodDefinition
 import io.grpc.kotlin.StubFor
 import kotlin.String
@@ -21,39 +26,59 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.jvm.JvmOverloads
 import kotlin.jvm.JvmStatic
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Holder for Kotlin coroutine-based client and server APIs for
  * com.giyeok.bibix.intellij.BibixIntellijService.
  */
-object BibixIntellijServiceGrpcKt {
-  const val SERVICE_NAME: String = BibixIntellijServiceGrpc.SERVICE_NAME
+public object BibixIntellijServiceGrpcKt {
+  public const val SERVICE_NAME: String = BibixIntellijServiceGrpc.SERVICE_NAME
 
   @JvmStatic
-  val serviceDescriptor: ServiceDescriptor
+  public val serviceDescriptor: ServiceDescriptor
     get() = BibixIntellijServiceGrpc.getServiceDescriptor()
 
-  val loadProjectMethod: MethodDescriptor<BibixIntellijProto.LoadProjectReq,
-      BibixIntellijProto.BibixProjectInfo>
+  public val loadProjectMethod:
+      MethodDescriptor<BibixIntellijProto.LoadProjectReq, BibixIntellijProto.BibixProjectInfo>
     @JvmStatic
     get() = BibixIntellijServiceGrpc.getLoadProjectMethod()
+
+  public val buildTargetsMethod:
+      MethodDescriptor<BibixIntellijProto.BuildTargetsReq, BibixIntellijProto.BuildTargetsRes>
+    @JvmStatic
+    get() = BibixIntellijServiceGrpc.getBuildTargetsMethod()
+
+  public val buildTargetsStreamingMethod:
+      MethodDescriptor<BibixIntellijProto.BuildTargetsReq, BibixIntellijProto.BuildTargetsUpdate>
+    @JvmStatic
+    get() = BibixIntellijServiceGrpc.getBuildTargetsStreamingMethod()
+
+  public val executeActionsMethod:
+      MethodDescriptor<BibixIntellijProto.ExecuteActionsReq, BibixIntellijProto.ExecuteActionsRes>
+    @JvmStatic
+    get() = BibixIntellijServiceGrpc.getExecuteActionsMethod()
+
+  public val executeActionsStreamingMethod:
+      MethodDescriptor<BibixIntellijProto.BuildTargetsReq, BibixIntellijProto.ExecuteActionUpdate>
+    @JvmStatic
+    get() = BibixIntellijServiceGrpc.getExecuteActionsStreamingMethod()
 
   /**
    * A stub for issuing RPCs to a(n) com.giyeok.bibix.intellij.BibixIntellijService service as
    * suspending coroutines.
    */
   @StubFor(BibixIntellijServiceGrpc::class)
-  class BibixIntellijServiceCoroutineStub @JvmOverloads constructor(
+  public class BibixIntellijServiceCoroutineStub @JvmOverloads constructor(
     channel: Channel,
-    callOptions: CallOptions = DEFAULT
+    callOptions: CallOptions = DEFAULT,
   ) : AbstractCoroutineStub<BibixIntellijServiceCoroutineStub>(channel, callOptions) {
-    override fun build(channel: Channel, callOptions: CallOptions):
+    public override fun build(channel: Channel, callOptions: CallOptions):
         BibixIntellijServiceCoroutineStub = BibixIntellijServiceCoroutineStub(channel, callOptions)
 
     /**
      * Executes this RPC and returns the response message, suspending until the RPC completes
-     * with [`Status.OK`][io.grpc.Status].  If the RPC completes with another status, a
-     * corresponding
+     * with [`Status.OK`][Status].  If the RPC completes with another status, a corresponding
      * [StatusException] is thrown.  If this coroutine is cancelled, the RPC is also cancelled
      * with the corresponding exception as a cause.
      *
@@ -63,43 +88,218 @@ object BibixIntellijServiceGrpcKt {
      *
      * @return The single response from the server.
      */
-    suspend fun loadProject(request: BibixIntellijProto.LoadProjectReq, headers: Metadata =
+    public suspend fun loadProject(request: BibixIntellijProto.LoadProjectReq, headers: Metadata =
         Metadata()): BibixIntellijProto.BibixProjectInfo = unaryRpc(
       channel,
       BibixIntellijServiceGrpc.getLoadProjectMethod(),
       request,
       callOptions,
       headers
-    )}
+    )
+
+    /**
+     * Executes this RPC and returns the response message, suspending until the RPC completes
+     * with [`Status.OK`][Status].  If the RPC completes with another status, a corresponding
+     * [StatusException] is thrown.  If this coroutine is cancelled, the RPC is also cancelled
+     * with the corresponding exception as a cause.
+     *
+     * @param request The request message to send to the server.
+     *
+     * @param headers Metadata to attach to the request.  Most users will not need this.
+     *
+     * @return The single response from the server.
+     */
+    public suspend fun buildTargets(request: BibixIntellijProto.BuildTargetsReq, headers: Metadata =
+        Metadata()): BibixIntellijProto.BuildTargetsRes = unaryRpc(
+      channel,
+      BibixIntellijServiceGrpc.getBuildTargetsMethod(),
+      request,
+      callOptions,
+      headers
+    )
+
+    /**
+     * Returns a [Flow] that, when collected, executes this RPC and emits responses from the
+     * server as they arrive.  That flow finishes normally if the server closes its response with
+     * [`Status.OK`][Status], and fails by throwing a [StatusException] otherwise.  If
+     * collecting the flow downstream fails exceptionally (including via cancellation), the RPC
+     * is cancelled with that exception as a cause.
+     *
+     * @param request The request message to send to the server.
+     *
+     * @param headers Metadata to attach to the request.  Most users will not need this.
+     *
+     * @return A flow that, when collected, emits the responses from the server.
+     */
+    public fun buildTargetsStreaming(request: BibixIntellijProto.BuildTargetsReq, headers: Metadata
+        = Metadata()): Flow<BibixIntellijProto.BuildTargetsUpdate> = serverStreamingRpc(
+      channel,
+      BibixIntellijServiceGrpc.getBuildTargetsStreamingMethod(),
+      request,
+      callOptions,
+      headers
+    )
+
+    /**
+     * Executes this RPC and returns the response message, suspending until the RPC completes
+     * with [`Status.OK`][Status].  If the RPC completes with another status, a corresponding
+     * [StatusException] is thrown.  If this coroutine is cancelled, the RPC is also cancelled
+     * with the corresponding exception as a cause.
+     *
+     * @param request The request message to send to the server.
+     *
+     * @param headers Metadata to attach to the request.  Most users will not need this.
+     *
+     * @return The single response from the server.
+     */
+    public suspend fun executeActions(request: BibixIntellijProto.ExecuteActionsReq,
+        headers: Metadata = Metadata()): BibixIntellijProto.ExecuteActionsRes = unaryRpc(
+      channel,
+      BibixIntellijServiceGrpc.getExecuteActionsMethod(),
+      request,
+      callOptions,
+      headers
+    )
+
+    /**
+     * Returns a [Flow] that, when collected, executes this RPC and emits responses from the
+     * server as they arrive.  That flow finishes normally if the server closes its response with
+     * [`Status.OK`][Status], and fails by throwing a [StatusException] otherwise.  If
+     * collecting the flow downstream fails exceptionally (including via cancellation), the RPC
+     * is cancelled with that exception as a cause.
+     *
+     * @param request The request message to send to the server.
+     *
+     * @param headers Metadata to attach to the request.  Most users will not need this.
+     *
+     * @return A flow that, when collected, emits the responses from the server.
+     */
+    public fun executeActionsStreaming(request: BibixIntellijProto.BuildTargetsReq,
+        headers: Metadata = Metadata()): Flow<BibixIntellijProto.ExecuteActionUpdate> =
+        serverStreamingRpc(
+      channel,
+      BibixIntellijServiceGrpc.getExecuteActionsStreamingMethod(),
+      request,
+      callOptions,
+      headers
+    )
+  }
 
   /**
    * Skeletal implementation of the com.giyeok.bibix.intellij.BibixIntellijService service based on
    * Kotlin coroutines.
    */
-  abstract class BibixIntellijServiceCoroutineImplBase(
-    coroutineContext: CoroutineContext = EmptyCoroutineContext
+  public abstract class BibixIntellijServiceCoroutineImplBase(
+    coroutineContext: CoroutineContext = EmptyCoroutineContext,
   ) : AbstractCoroutineServerImpl(coroutineContext) {
     /**
      * Returns the response to an RPC for
      * com.giyeok.bibix.intellij.BibixIntellijService.loadProject.
      *
      * If this method fails with a [StatusException], the RPC will fail with the corresponding
-     * [io.grpc.Status].  If this method fails with a [java.util.concurrent.CancellationException],
-     * the RPC will fail
+     * [Status].  If this method fails with a [java.util.concurrent.CancellationException], the RPC
+     * will fail
      * with status `Status.CANCELLED`.  If this method fails for any other reason, the RPC will
      * fail with `Status.UNKNOWN` with the exception as a cause.
      *
      * @param request The request from the client.
      */
-    open suspend fun loadProject(request: BibixIntellijProto.LoadProjectReq):
+    public open suspend fun loadProject(request: BibixIntellijProto.LoadProjectReq):
         BibixIntellijProto.BibixProjectInfo = throw
         StatusException(UNIMPLEMENTED.withDescription("Method com.giyeok.bibix.intellij.BibixIntellijService.loadProject is unimplemented"))
 
-    final override fun bindService(): ServerServiceDefinition = builder(getServiceDescriptor())
+    /**
+     * Returns the response to an RPC for
+     * com.giyeok.bibix.intellij.BibixIntellijService.buildTargets.
+     *
+     * If this method fails with a [StatusException], the RPC will fail with the corresponding
+     * [Status].  If this method fails with a [java.util.concurrent.CancellationException], the RPC
+     * will fail
+     * with status `Status.CANCELLED`.  If this method fails for any other reason, the RPC will
+     * fail with `Status.UNKNOWN` with the exception as a cause.
+     *
+     * @param request The request from the client.
+     */
+    public open suspend fun buildTargets(request: BibixIntellijProto.BuildTargetsReq):
+        BibixIntellijProto.BuildTargetsRes = throw
+        StatusException(UNIMPLEMENTED.withDescription("Method com.giyeok.bibix.intellij.BibixIntellijService.buildTargets is unimplemented"))
+
+    /**
+     * Returns a [Flow] of responses to an RPC for
+     * com.giyeok.bibix.intellij.BibixIntellijService.buildTargetsStreaming.
+     *
+     * If creating or collecting the returned flow fails with a [StatusException], the RPC
+     * will fail with the corresponding [Status].  If it fails with a
+     * [java.util.concurrent.CancellationException], the RPC will fail with status
+     * `Status.CANCELLED`.  If creating
+     * or collecting the returned flow fails for any other reason, the RPC will fail with
+     * `Status.UNKNOWN` with the exception as a cause.
+     *
+     * @param request The request from the client.
+     */
+    public open fun buildTargetsStreaming(request: BibixIntellijProto.BuildTargetsReq):
+        Flow<BibixIntellijProto.BuildTargetsUpdate> = throw
+        StatusException(UNIMPLEMENTED.withDescription("Method com.giyeok.bibix.intellij.BibixIntellijService.buildTargetsStreaming is unimplemented"))
+
+    /**
+     * Returns the response to an RPC for
+     * com.giyeok.bibix.intellij.BibixIntellijService.executeActions.
+     *
+     * If this method fails with a [StatusException], the RPC will fail with the corresponding
+     * [Status].  If this method fails with a [java.util.concurrent.CancellationException], the RPC
+     * will fail
+     * with status `Status.CANCELLED`.  If this method fails for any other reason, the RPC will
+     * fail with `Status.UNKNOWN` with the exception as a cause.
+     *
+     * @param request The request from the client.
+     */
+    public open suspend fun executeActions(request: BibixIntellijProto.ExecuteActionsReq):
+        BibixIntellijProto.ExecuteActionsRes = throw
+        StatusException(UNIMPLEMENTED.withDescription("Method com.giyeok.bibix.intellij.BibixIntellijService.executeActions is unimplemented"))
+
+    /**
+     * Returns a [Flow] of responses to an RPC for
+     * com.giyeok.bibix.intellij.BibixIntellijService.executeActionsStreaming.
+     *
+     * If creating or collecting the returned flow fails with a [StatusException], the RPC
+     * will fail with the corresponding [Status].  If it fails with a
+     * [java.util.concurrent.CancellationException], the RPC will fail with status
+     * `Status.CANCELLED`.  If creating
+     * or collecting the returned flow fails for any other reason, the RPC will fail with
+     * `Status.UNKNOWN` with the exception as a cause.
+     *
+     * @param request The request from the client.
+     */
+    public open fun executeActionsStreaming(request: BibixIntellijProto.BuildTargetsReq):
+        Flow<BibixIntellijProto.ExecuteActionUpdate> = throw
+        StatusException(UNIMPLEMENTED.withDescription("Method com.giyeok.bibix.intellij.BibixIntellijService.executeActionsStreaming is unimplemented"))
+
+    public final override fun bindService(): ServerServiceDefinition =
+        builder(getServiceDescriptor())
       .addMethod(unaryServerMethodDefinition(
       context = this.context,
       descriptor = BibixIntellijServiceGrpc.getLoadProjectMethod(),
       implementation = ::loadProject
+    ))
+      .addMethod(unaryServerMethodDefinition(
+      context = this.context,
+      descriptor = BibixIntellijServiceGrpc.getBuildTargetsMethod(),
+      implementation = ::buildTargets
+    ))
+      .addMethod(serverStreamingServerMethodDefinition(
+      context = this.context,
+      descriptor = BibixIntellijServiceGrpc.getBuildTargetsStreamingMethod(),
+      implementation = ::buildTargetsStreaming
+    ))
+      .addMethod(unaryServerMethodDefinition(
+      context = this.context,
+      descriptor = BibixIntellijServiceGrpc.getExecuteActionsMethod(),
+      implementation = ::executeActions
+    ))
+      .addMethod(serverStreamingServerMethodDefinition(
+      context = this.context,
+      descriptor = BibixIntellijServiceGrpc.getExecuteActionsStreamingMethod(),
+      implementation = ::executeActionsStreaming
     )).build()
   }
 }

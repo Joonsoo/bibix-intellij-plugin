@@ -1,8 +1,7 @@
 package com.giyeok.bibix.intellijplugin.system
 
-import com.giyeok.bibix.daemon.BibixDaemonApiGrpcKt
-import com.giyeok.bibix.daemon.getIntellijProjectStructureReq
 import com.giyeok.bibix.intellijplugin.BibixConstants
+import com.giyeok.bibix.intellijplugin.BibixProjectLoader
 import com.giyeok.bibix.intellijplugin.BibixSettingsListener
 import com.giyeok.bibix.intellijplugin.settings.BibixExecutionSettings
 import com.giyeok.bibix.intellijplugin.settings.BibixLocalSettings
@@ -21,8 +20,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.StartupActivity
 import com.intellij.openapi.util.Pair
 import com.intellij.util.Function
+import io.grpc.ManagedChannelBuilder
 import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder
-import kotlinx.coroutines.runBlocking
+import kotlin.io.path.Path
 
 open class XX
 
@@ -53,26 +53,30 @@ class BibixManager : XX(),
     Function { pair: Pair<Project, String> ->
       val project = pair.first
       val projectPath = pair.second
-      val settings = BibixSettings.getInstance(project)
-      val projectLevelSettings = settings.getLinkedProjectSettings(projectPath)
-      val rootProjectPath =
-        if (projectLevelSettings != null) projectLevelSettings.externalProjectPath else projectPath
+//      val settings = BibixSettings.getInstance(project)
+//      val projectLevelSettings = settings.getLinkedProjectSettings(projectPath)
+//      val rootProjectPath =
+//        if (projectLevelSettings != null) projectLevelSettings.externalProjectPath else projectPath
+//
+////      val channel = ManagedChannelBuilder.forAddress("localhost", 61617)
+////        .usePlaintext().build()
+//      val channel = NettyChannelBuilder.forAddress("localhost", 61617).usePlaintext().build()
+//
+//      val bibixClient = BibixDaemonApiGrpcKt.BibixDaemonApiCoroutineStub(channel)
+//
+//      val projectStructure = try {
+//        runBlocking {
+//          bibixClient.getIntellijProjectStructure(getIntellijProjectStructureReq { })
+//        }
+//      } finally {
+//        channel.shutdown()
+//      }
+//
+      val channel = NettyChannelBuilder.forAddress("localhost", 8088).usePlaintext().build()
 
-//      val channel = ManagedChannelBuilder.forAddress("localhost", 61617)
-//        .usePlaintext().build()
-      val channel = NettyChannelBuilder.forAddress("localhost", 61617).usePlaintext().build()
-
-      val bibixClient = BibixDaemonApiGrpcKt.BibixDaemonApiCoroutineStub(channel)
-
-      val projectStructure = try {
-        runBlocking {
-          bibixClient.getIntellijProjectStructure(getIntellijProjectStructureReq { })
-        }
-      } finally {
-        channel.shutdown()
-      }
-
-      BibixExecutionSettings(BibixExecutionSettings.convertProject(projectPath, projectStructure))
+      val loader = BibixProjectLoader(Path(projectPath), "")
+      val projectNode = loader.loadProjectStructure(channel)
+      BibixExecutionSettings(projectNode)
     }
 
   override fun enhanceRemoteProcessing(parameters: SimpleJavaParameters) {

@@ -1,18 +1,25 @@
 package com.giyeok.bibix.intellijplugin.settings
 
-import com.giyeok.bibix.daemon.BibixDaemonApiProto
-import com.giyeok.bibix.daemon.BibixDaemonApiProto.IntellijProjectStructure
-import com.giyeok.bibix.intellijplugin.BibixConstants
 import com.giyeok.bibix.intellijplugin.BibixProjectLoader
-import com.giyeok.bibix.intellijplugin.services.BibixJavaSdkData
-import com.giyeok.bibix.intellijplugin.services.BibixModuleSdkData
-import com.giyeok.bibix.intellijplugin.services.BibixScalaSdkData
-import com.giyeok.bibix.intellijplugin.system.BibixProjectResolverUtil
 import com.intellij.openapi.externalSystem.model.DataNode
-import com.intellij.openapi.externalSystem.model.ProjectKeys
-import com.intellij.openapi.externalSystem.model.project.*
+import com.intellij.openapi.externalSystem.model.project.ProjectData
 import com.intellij.openapi.externalSystem.model.settings.ExternalSystemExecutionSettings
+import io.grpc.ManagedChannelBuilder
 import kotlin.io.path.Path
+
+//import com.giyeok.bibix.daemon.BibixDaemonApiProto
+//import com.giyeok.bibix.daemon.BibixDaemonApiProto.IntellijProjectStructure
+//import com.giyeok.bibix.intellijplugin.BibixConstants
+//import com.giyeok.bibix.intellijplugin.BibixProjectLoader
+//import com.giyeok.bibix.intellijplugin.services.BibixJavaSdkData
+//import com.giyeok.bibix.intellijplugin.services.BibixModuleSdkData
+//import com.giyeok.bibix.intellijplugin.services.BibixScalaSdkData
+//import com.giyeok.bibix.intellijplugin.system.BibixProjectResolverUtil
+//import com.intellij.openapi.externalSystem.model.DataNode
+//import com.intellij.openapi.externalSystem.model.ProjectKeys
+//import com.intellij.openapi.externalSystem.model.project.*
+//import com.intellij.openapi.externalSystem.model.settings.ExternalSystemExecutionSettings
+//import kotlin.io.path.Path
 
 class BibixExecutionSettings(
   val projectDataNode: DataNode<ProjectData>
@@ -20,11 +27,9 @@ class BibixExecutionSettings(
   companion object {
     fun convertProject(
       projectPath: String,
-      projectStructure: IntellijProjectStructure
+//      projectStructure: IntellijProjectStructure
     ): DataNode<ProjectData> {
-      val loader = BibixProjectLoader(Path(projectPath), "build.bbx")
-      return loader.loadProjectStructure()
-
+      TODO()
 //      val projectName = projectStructure.project.name
 //      val projectData =
 //        ProjectData(
@@ -129,6 +134,7 @@ class BibixExecutionSettings(
 //          }
 //        }
 //      }
+      TODO()
     }
   }
 }

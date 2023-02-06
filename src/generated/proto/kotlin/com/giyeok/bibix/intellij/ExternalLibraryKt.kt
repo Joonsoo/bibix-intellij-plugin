@@ -3,16 +3,16 @@
 
 package com.giyeok.bibix.intellij;
 
-@kotlin.jvm.JvmSynthetic
-public inline fun externalLibrary(block: com.giyeok.bibix.intellij.ExternalLibraryKt.Dsl.() -> kotlin.Unit): com.giyeok.bibix.intellij.BibixIntellijProto.ExternalLibrary =
+@kotlin.jvm.JvmName("-initializeexternalLibrary")
+inline fun externalLibrary(block: com.giyeok.bibix.intellij.ExternalLibraryKt.Dsl.() -> kotlin.Unit): com.giyeok.bibix.intellij.BibixIntellijProto.ExternalLibrary =
   com.giyeok.bibix.intellij.ExternalLibraryKt.Dsl._create(com.giyeok.bibix.intellij.BibixIntellijProto.ExternalLibrary.newBuilder()).apply { block() }._build()
-public object ExternalLibraryKt {
+object ExternalLibraryKt {
   @kotlin.OptIn(com.google.protobuf.kotlin.OnlyForUseByGeneratedProtoCode::class)
   @com.google.protobuf.kotlin.ProtoDslMarker
-  public class Dsl private constructor(
+  class Dsl private constructor(
     private val _builder: com.giyeok.bibix.intellij.BibixIntellijProto.ExternalLibrary.Builder
   ) {
-    public companion object {
+    companion object {
       @kotlin.jvm.JvmSynthetic
       @kotlin.PublishedApi
       internal fun _create(builder: com.giyeok.bibix.intellij.BibixIntellijProto.ExternalLibrary.Builder): Dsl = Dsl(builder)
@@ -25,7 +25,7 @@ public object ExternalLibraryKt {
     /**
      * <code>string library_id = 1;</code>
      */
-    public var libraryId: kotlin.String
+    var libraryId: kotlin.String
       @JvmName("getLibraryId")
       get() = _builder.getLibraryId()
       @JvmName("setLibraryId")
@@ -35,11 +35,169 @@ public object ExternalLibraryKt {
     /**
      * <code>string library_id = 1;</code>
      */
-    public fun clearLibraryId() {
+    fun clearLibraryId() {
       _builder.clearLibraryId()
     }
-  }
+
+    /**
+     * <code>string description = 2;</code>
+     */
+    var description: kotlin.String
+      @JvmName("getDescription")
+      get() = _builder.getDescription()
+      @JvmName("setDescription")
+      set(value) {
+        _builder.setDescription(value)
+      }
+    /**
+     * <code>string description = 2;</code>
+     */
+    fun clearDescription() {
+      _builder.clearDescription()
+    }
+
+    /**
+     * An uninstantiable, behaviorless type to represent the field in
+     * generics.
+     */
+    @kotlin.OptIn(com.google.protobuf.kotlin.OnlyForUseByGeneratedProtoCode::class)
+    class ClasspathsProxy private constructor() : com.google.protobuf.kotlin.DslProxy()
+    /**
+     * <code>repeated string classpaths = 3;</code>
+     * @return A list containing the classpaths.
+     */
+     val classpaths: com.google.protobuf.kotlin.DslList<kotlin.String, ClasspathsProxy>
+      @kotlin.jvm.JvmSynthetic
+      get() = com.google.protobuf.kotlin.DslList(
+        _builder.getClasspathsList()
+      )
+    /**
+     * <code>repeated string classpaths = 3;</code>
+     * @param value The classpaths to add.
+     */
+    @kotlin.jvm.JvmSynthetic
+    @kotlin.jvm.JvmName("addClasspaths")
+    fun com.google.protobuf.kotlin.DslList<kotlin.String, ClasspathsProxy>.add(value: kotlin.String) {
+      _builder.addClasspaths(value)
+    }
+    /**
+     * <code>repeated string classpaths = 3;</code>
+     * @param value The classpaths to add.
+     */
+    @kotlin.jvm.JvmSynthetic
+    @kotlin.jvm.JvmName("plusAssignClasspaths")
+    @Suppress("NOTHING_TO_INLINE")
+    inline operator fun com.google.protobuf.kotlin.DslList<kotlin.String, ClasspathsProxy>.plusAssign(value: kotlin.String) {
+      add(value)
+    }
+    /**
+     * <code>repeated string classpaths = 3;</code>
+     * @param values The classpaths to add.
+     */
+    @kotlin.jvm.JvmSynthetic
+    @kotlin.jvm.JvmName("addAllClasspaths")
+    fun com.google.protobuf.kotlin.DslList<kotlin.String, ClasspathsProxy>.addAll(values: kotlin.collections.Iterable<kotlin.String>) {
+      _builder.addAllClasspaths(values)
+    }
+    /**
+     * <code>repeated string classpaths = 3;</code>
+     * @param values The classpaths to add.
+     */
+    @kotlin.jvm.JvmSynthetic
+    @kotlin.jvm.JvmName("plusAssignAllClasspaths")
+    @Suppress("NOTHING_TO_INLINE")
+    inline operator fun com.google.protobuf.kotlin.DslList<kotlin.String, ClasspathsProxy>.plusAssign(values: kotlin.collections.Iterable<kotlin.String>) {
+      addAll(values)
+    }
+    /**
+     * <code>repeated string classpaths = 3;</code>
+     * @param index The index to set the value at.
+     * @param value The classpaths to set.
+     */
+    @kotlin.jvm.JvmSynthetic
+    @kotlin.jvm.JvmName("setClasspaths")
+    operator fun com.google.protobuf.kotlin.DslList<kotlin.String, ClasspathsProxy>.set(index: kotlin.Int, value: kotlin.String) {
+      _builder.setClasspaths(index, value)
+    }/**
+     * <code>repeated string classpaths = 3;</code>
+     */
+    @kotlin.jvm.JvmSynthetic
+    @kotlin.jvm.JvmName("clearClasspaths")
+    fun com.google.protobuf.kotlin.DslList<kotlin.String, ClasspathsProxy>.clear() {
+      _builder.clearClasspaths()
+    }
+    /**
+     * An uninstantiable, behaviorless type to represent the field in
+     * generics.
+     */
+    @kotlin.OptIn(com.google.protobuf.kotlin.OnlyForUseByGeneratedProtoCode::class)
+    class SourcesProxy private constructor() : com.google.protobuf.kotlin.DslProxy()
+    /**
+     * <code>repeated string sources = 4;</code>
+     * @return A list containing the sources.
+     */
+     val sources: com.google.protobuf.kotlin.DslList<kotlin.String, SourcesProxy>
+      @kotlin.jvm.JvmSynthetic
+      get() = com.google.protobuf.kotlin.DslList(
+        _builder.getSourcesList()
+      )
+    /**
+     * <code>repeated string sources = 4;</code>
+     * @param value The sources to add.
+     */
+    @kotlin.jvm.JvmSynthetic
+    @kotlin.jvm.JvmName("addSources")
+    fun com.google.protobuf.kotlin.DslList<kotlin.String, SourcesProxy>.add(value: kotlin.String) {
+      _builder.addSources(value)
+    }
+    /**
+     * <code>repeated string sources = 4;</code>
+     * @param value The sources to add.
+     */
+    @kotlin.jvm.JvmSynthetic
+    @kotlin.jvm.JvmName("plusAssignSources")
+    @Suppress("NOTHING_TO_INLINE")
+    inline operator fun com.google.protobuf.kotlin.DslList<kotlin.String, SourcesProxy>.plusAssign(value: kotlin.String) {
+      add(value)
+    }
+    /**
+     * <code>repeated string sources = 4;</code>
+     * @param values The sources to add.
+     */
+    @kotlin.jvm.JvmSynthetic
+    @kotlin.jvm.JvmName("addAllSources")
+    fun com.google.protobuf.kotlin.DslList<kotlin.String, SourcesProxy>.addAll(values: kotlin.collections.Iterable<kotlin.String>) {
+      _builder.addAllSources(values)
+    }
+    /**
+     * <code>repeated string sources = 4;</code>
+     * @param values The sources to add.
+     */
+    @kotlin.jvm.JvmSynthetic
+    @kotlin.jvm.JvmName("plusAssignAllSources")
+    @Suppress("NOTHING_TO_INLINE")
+    inline operator fun com.google.protobuf.kotlin.DslList<kotlin.String, SourcesProxy>.plusAssign(values: kotlin.collections.Iterable<kotlin.String>) {
+      addAll(values)
+    }
+    /**
+     * <code>repeated string sources = 4;</code>
+     * @param index The index to set the value at.
+     * @param value The sources to set.
+     */
+    @kotlin.jvm.JvmSynthetic
+    @kotlin.jvm.JvmName("setSources")
+    operator fun com.google.protobuf.kotlin.DslList<kotlin.String, SourcesProxy>.set(index: kotlin.Int, value: kotlin.String) {
+      _builder.setSources(index, value)
+    }/**
+     * <code>repeated string sources = 4;</code>
+     */
+    @kotlin.jvm.JvmSynthetic
+    @kotlin.jvm.JvmName("clearSources")
+    fun com.google.protobuf.kotlin.DslList<kotlin.String, SourcesProxy>.clear() {
+      _builder.clearSources()
+    }}
 }
 @kotlin.jvm.JvmSynthetic
-public inline fun com.giyeok.bibix.intellij.BibixIntellijProto.ExternalLibrary.copy(block: com.giyeok.bibix.intellij.ExternalLibraryKt.Dsl.() -> kotlin.Unit): com.giyeok.bibix.intellij.BibixIntellijProto.ExternalLibrary =
+inline fun com.giyeok.bibix.intellij.BibixIntellijProto.ExternalLibrary.copy(block: com.giyeok.bibix.intellij.ExternalLibraryKt.Dsl.() -> kotlin.Unit): com.giyeok.bibix.intellij.BibixIntellijProto.ExternalLibrary =
   com.giyeok.bibix.intellij.ExternalLibraryKt.Dsl._create(this.toBuilder()).apply { block() }._build()
+
