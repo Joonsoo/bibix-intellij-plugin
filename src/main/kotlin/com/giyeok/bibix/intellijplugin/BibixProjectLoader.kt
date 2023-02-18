@@ -19,6 +19,7 @@ class BibixProjectLoader(val projectRoot: Path, val scriptFileName: String) {
     val projectInfo = stub.loadProject(loadProjectReq {
       this.projectRoot = projectAbsolutePath
       this.scriptName = scriptFileName
+      this.forceReload = true
     })
 
     val projectData = ProjectData(
