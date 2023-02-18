@@ -12,10 +12,8 @@
         <externalSystemManager implementation="com.giyeok.bibix.intellijplugin.system.BibixManager"/>
         <projectOpenProcessor id="bibix"
                               implementation="com.giyeok.bibix.intellijplugin.projectOpen.BibixProjectOpenProcessor"/>
-        <externalProjectDataService implementation="com.giyeok.bibix.intellijplugin.services.BibixProjectDataService"/>
-        <externalProjectDataService implementation="com.giyeok.bibix.intellijplugin.services.BibixModuleDataService"/>
         <externalProjectDataService
-                implementation="com.giyeok.bibix.intellijplugin.services.BibixContentRootDataSource"/>
+                implementation="com.giyeok.bibix.intellijplugin.services.BibixSdkDataService"/>
         <externalProjectDataService
                 implementation="com.giyeok.bibix.intellijplugin.services.BibixModuleSdkDataService"/>
         <projectService serviceImplementation="com.giyeok.bibix.intellijplugin.settings.BibixSettings"/>

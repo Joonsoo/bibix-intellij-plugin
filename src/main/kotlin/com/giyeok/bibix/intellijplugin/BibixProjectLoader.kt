@@ -1,9 +1,9 @@
 package com.giyeok.bibix.intellijplugin
 
+import com.giyeok.bibix.intellij.BibixIntellijProto
 import com.giyeok.bibix.intellij.BibixIntellijServiceGrpc
 import com.giyeok.bibix.intellij.loadProjectReq
-import com.giyeok.bibix.intellijplugin.services.BibixJavaSdkData
-import com.giyeok.bibix.intellijplugin.services.BibixModuleSdkData
+import com.giyeok.bibix.intellijplugin.services.*
 import com.giyeok.bibix.intellijplugin.system.BibixProjectResolverUtil
 import com.intellij.openapi.externalSystem.model.DataNode
 import com.intellij.openapi.externalSystem.model.ProjectKeys
@@ -41,9 +41,34 @@ class BibixProjectLoader(val projectRoot: Path, val scriptFileName: String) {
         libraryData.addPath(LibraryPathType.SOURCE, src)
       }
 
-      val libraryNode = projectNode.createChild(ProjectKeys.LIBRARY, libraryData)
+      projectNode.createChild(ProjectKeys.LIBRARY, libraryData)
 
       externalLib.libraryId to libraryData
+    }
+
+    val ktjvmSdks = projectInfo.sdks.ktjvmSdksList.associate { ktjvmSdk ->
+      val sdkData = KtJvmSdkData(
+        version = ktjvmSdk.version,
+        sdkLibraryIds = ktjvmSdk.sdkLibraryIdsList.toList()
+      )
+      projectNode.createChild(
+        BibixSdkData.KEY,
+        BibixKtJvmSdkData(BibixConstants.SYSTEM_ID, sdkData)
+      )
+      sdkData.version to sdkData
+    }
+    val scalaSdks = projectInfo.sdks.scalaSdksList.associate { scalaSdk ->
+      val sdkData = ScalaSdkData(
+        version = scalaSdk.version,
+        langVersion = scalaSdk.scalaLanguageVersion,
+        compilerClasspaths = scalaSdk.compilerClasspathsList.toList(),
+        sdkLibraryIds = scalaSdk.sdkLibraryIdsList.toList()
+      )
+      projectNode.createChild(
+        BibixSdkData.KEY,
+        BibixScalaSdkData(BibixConstants.SYSTEM_ID, sdkData)
+      )
+      sdkData.version to sdkData
     }
 
     val moduleDataMap = projectInfo.modulesList.associate { module ->
@@ -61,7 +86,7 @@ class BibixProjectLoader(val projectRoot: Path, val scriptFileName: String) {
         val contentRootData = ContentRootData(BibixConstants.SYSTEM_ID, module.moduleRootPath)
         module.contentRootsList.forEach { contentRoot ->
           // TODO source 이외의 다른 타입 지원
-          val sourceType = when(contentRoot.contentRootType) {
+          val sourceType = when (contentRoot.contentRootType) {
             "src" -> ExternalSystemSourceType.SOURCE
             "res" -> ExternalSystemSourceType.RESOURCE
             else -> ExternalSystemSourceType.SOURCE
@@ -80,10 +105,37 @@ class BibixProjectLoader(val projectRoot: Path, val scriptFileName: String) {
       }
 
       module.moduleSdksList.forEach { moduleSdk ->
-        moduleNode.createChild(
-          BibixModuleSdkData.KEY,
-          BibixJavaSdkData(BibixConstants.SYSTEM_ID, moduleSdk.jdkVersion)
-        )
+        when (moduleSdk.sdkCase) {
+          BibixIntellijProto.ModuleSdk.SdkCase.JDK_VERSION ->
+            moduleNode.createChild(
+              BibixModuleSdkData.KEY,
+              BibixModuleJdkData(BibixConstants.SYSTEM_ID, moduleSdk.jdkVersion)
+            )
+
+          BibixIntellijProto.ModuleSdk.SdkCase.KTJVM_SDK_VERSION ->
+            moduleNode.createChild(
+              BibixModuleSdkData.KEY,
+              BibixModuleKtJvmSdkData(
+                BibixConstants.SYSTEM_ID,
+                moduleSdk.ktjvmSdkVersion,
+                ktjvmSdks.getValue(moduleSdk.ktjvmSdkVersion)
+              ),
+            )
+
+          BibixIntellijProto.ModuleSdk.SdkCase.SCALA_SDK_VERSION ->
+            moduleNode.createChild(
+              BibixModuleSdkData.KEY,
+              BibixModuleScalaSdkData(
+                BibixConstants.SYSTEM_ID,
+                moduleSdk.scalaSdkVersion,
+                scalaSdks.getValue(moduleSdk.scalaSdkVersion)
+              )
+            )
+
+          BibixIntellijProto.ModuleSdk.SdkCase.SDK_NOT_SET -> {
+            // Shouldn't happen
+          }
+        }
       }
 
       module.moduleName to Pair(moduleData, moduleNode)
