@@ -49,14 +49,16 @@ class BibixManager : XX(),
       BibixLocalSettings.getInstance(project)
     }
 
+  val channel = NettyChannelBuilder.forAddress("localhost", 8088).usePlaintext().build()
+
   override fun getExecutionSettingsProvider(): Function<Pair<Project, String>, BibixExecutionSettings> =
     Function { pair: Pair<Project, String> ->
       val project = pair.first
       val projectPath = pair.second
-//      val settings = BibixSettings.getInstance(project)
-//      val projectLevelSettings = settings.getLinkedProjectSettings(projectPath)
-//      val rootProjectPath =
-//        if (projectLevelSettings != null) projectLevelSettings.externalProjectPath else projectPath
+      val settings = BibixSettings.getInstance(project)
+      val projectLevelSettings = settings.getLinkedProjectSettings(projectPath)
+      val rootProjectPath =
+        if (projectLevelSettings != null) projectLevelSettings.externalProjectPath else projectPath
 //
 ////      val channel = ManagedChannelBuilder.forAddress("localhost", 61617)
 ////        .usePlaintext().build()
@@ -72,9 +74,8 @@ class BibixManager : XX(),
 //        channel.shutdown()
 //      }
 //
-      val channel = NettyChannelBuilder.forAddress("localhost", 8088).usePlaintext().build()
 
-      val loader = BibixProjectLoader(Path(projectPath), "")
+      val loader = BibixProjectLoader(Path(rootProjectPath), "")
       val projectNode = loader.loadProjectStructure(channel)
       BibixExecutionSettings(projectNode)
     }

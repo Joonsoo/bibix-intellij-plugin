@@ -56,10 +56,18 @@ class BibixProjectLoader(val projectRoot: Path, val scriptFileName: String) {
         projectAbsolutePath,
       )
       val moduleNode = projectNode.createChild(ProjectKeys.MODULE, moduleData)
-      module.contentRootsList.forEach { contentRoot ->
-        val contentRootData = ContentRootData(BibixConstants.SYSTEM_ID, contentRoot.contentRootPath)
-        // TODO source 이외의 다른 타입 지원
-        contentRootData.storePath(ExternalSystemSourceType.SOURCE, contentRoot.contentRootPath)
+
+      if (module.contentRootsCount > 0) {
+        val contentRootData = ContentRootData(BibixConstants.SYSTEM_ID, module.moduleRootPath)
+        module.contentRootsList.forEach { contentRoot ->
+          // TODO source 이외의 다른 타입 지원
+          val sourceType = when(contentRoot.contentRootType) {
+            "src" -> ExternalSystemSourceType.SOURCE
+            "res" -> ExternalSystemSourceType.RESOURCE
+            else -> ExternalSystemSourceType.SOURCE
+          }
+          contentRootData.storePath(sourceType, contentRoot.contentRootPath)
+        }
         moduleNode.createChild(ProjectKeys.CONTENT_ROOT, contentRootData)
       }
 
@@ -67,13 +75,14 @@ class BibixProjectLoader(val projectRoot: Path, val scriptFileName: String) {
         val libraryData = projectLibrariesMap.getValue(libraryId)
         val libraryDepData =
           LibraryDependencyData(moduleNode.data, libraryData, LibraryLevel.PROJECT)
+        libraryDepData.isExported = true
         moduleNode.createChild(ProjectKeys.LIBRARY_DEPENDENCY, libraryDepData)
       }
 
-      if (module.sdkVersion.isNotEmpty()) {
+      module.moduleSdksList.forEach { moduleSdk ->
         moduleNode.createChild(
           BibixModuleSdkData.KEY,
-          BibixJavaSdkData(BibixConstants.SYSTEM_ID, module.sdkVersion)
+          BibixJavaSdkData(BibixConstants.SYSTEM_ID, moduleSdk.jdkVersion)
         )
       }
 
