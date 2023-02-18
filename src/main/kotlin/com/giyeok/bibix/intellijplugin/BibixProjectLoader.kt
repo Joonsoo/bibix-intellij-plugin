@@ -85,10 +85,10 @@ class BibixProjectLoader(val projectRoot: Path, val scriptFileName: String) {
       if (module.contentRootsCount > 0) {
         val contentRootData = ContentRootData(BibixConstants.SYSTEM_ID, module.moduleRootPath)
         module.contentRootsList.forEach { contentRoot ->
-          // TODO source 이외의 다른 타입 지원
           val sourceType = when (contentRoot.contentRootType) {
             "src" -> ExternalSystemSourceType.SOURCE
             "res" -> ExternalSystemSourceType.RESOURCE
+            "excluded" -> ExternalSystemSourceType.EXCLUDED
             else -> ExternalSystemSourceType.SOURCE
           }
           contentRootData.storePath(sourceType, contentRoot.contentRootPath)
