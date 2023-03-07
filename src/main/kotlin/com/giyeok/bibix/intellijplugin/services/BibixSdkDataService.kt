@@ -1,19 +1,14 @@
 package com.giyeok.bibix.intellijplugin.services
 
+import com.giyeok.bibix.intellijplugin.BibixConstants.SYSTEM_ID
 import com.intellij.openapi.externalSystem.model.DataNode
 import com.intellij.openapi.externalSystem.model.Key
 import com.intellij.openapi.externalSystem.model.project.*
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
-import com.intellij.openapi.externalSystem.service.project.manage.AbstractModuleDataService
 import com.intellij.openapi.externalSystem.service.project.manage.AbstractProjectDataService
+import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.ex.ProjectEx
-import com.intellij.openapi.projectRoots.ProjectJdkTable
 import com.intellij.openapi.roots.impl.libraries.LibraryEx
-import com.intellij.openapi.roots.ui.configuration.SdkLookupBuilder
-import com.intellij.openapi.roots.ui.configuration.SdkLookupDecision
-import com.intellij.openapi.roots.ui.configuration.UnknownSdkDownloadableSdkFix
-import com.intellij.openapi.roots.ui.configuration.lookupSdk
 import org.jetbrains.plugins.scala.project.ScalaLibraryProperties
 import org.jetbrains.plugins.scala.project.ScalaLibraryType
 import scala.Option
@@ -81,9 +76,21 @@ class BibixSdkDataService : AbstractProjectDataService<BibixSdkData, Project>() 
     val sdkNodes = toImport.filter { it.data is BibixScalaSdkData }
     println(sdkNodes)
 
+    val projectNode = ExternalSystemApiUtil.findProjectNode(project, SYSTEM_ID, project.basePath!!)
+    val scalaSdkDataMap = if (projectNode != null) {
+      val ktjvmSdkNodes = projectNode.children.filter { it.data is BibixKtJvmSdkData }
+      println(ktjvmSdkNodes)
+      projectNode.children
+        .filter { it.data is BibixScalaSdkData }
+        .map { it.data as BibixScalaSdkData }
+        .associateBy { it.version }
+    } else {
+      mapOf()
+    }
+
     sdkNodes.forEach { sdkNode ->
       val data = sdkNode.data as BibixScalaSdkData
-      data.sdk.sdkLibraryIds.forEach { libraryId ->
+      data.sdkLibraryIds.forEach { libraryId ->
         val sdkLibrary = modelsProvider.allLibraries.find { it.name?.contains(libraryId) ?: false }
         if (sdkLibrary != null) {
           val libraryModel =
@@ -99,9 +106,13 @@ class BibixSdkDataService : AbstractProjectDataService<BibixSdkData, Project>() 
             scala.collection.immutable.`List$`.`MODULE$`.empty(),
           )
           val compilerCpBuilder = scala.collection.immutable.`List$`.`MODULE$`.newBuilder<File>()
-          data.sdk.compilerClasspaths.forEach { compilerCp ->
-            compilerCpBuilder.addOne(File(compilerCp))
+
+          scalaSdkDataMap[data.version]?.let { sdkInfo ->
+            sdkInfo.compilerClasspaths.forEach { compilerCp ->
+              compilerCpBuilder.addOne(File(compilerCp))
+            }
           }
+
           scalaLibProps.`compilerClasspath_$eq`(compilerCpBuilder.result())
           libraryModel.properties = scalaLibProps
         }

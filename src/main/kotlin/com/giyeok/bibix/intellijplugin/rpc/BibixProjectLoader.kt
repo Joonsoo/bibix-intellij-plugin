@@ -1,8 +1,9 @@
-package com.giyeok.bibix.intellijplugin
+package com.giyeok.bibix.intellijplugin.rpc
 
 import com.giyeok.bibix.intellij.BibixIntellijProto
 import com.giyeok.bibix.intellij.BibixIntellijServiceGrpc
 import com.giyeok.bibix.intellij.loadProjectReq
+import com.giyeok.bibix.intellijplugin.BibixConstants
 import com.giyeok.bibix.intellijplugin.services.*
 import com.giyeok.bibix.intellijplugin.system.BibixProjectResolverUtil
 import com.intellij.openapi.externalSystem.model.DataNode
@@ -13,13 +14,14 @@ import java.nio.file.Path
 import kotlin.io.path.absolutePathString
 
 class BibixProjectLoader(val projectRoot: Path, val scriptFileName: String) {
+  private val projectAbsolutePath = projectRoot.absolutePathString()
+
   fun loadProjectStructure(channel: ManagedChannel): DataNode<ProjectData> {
     val stub = BibixIntellijServiceGrpc.newBlockingStub(channel)
-    val projectAbsolutePath = projectRoot.absolutePathString()
     val projectInfo = stub.loadProject(loadProjectReq {
       this.projectRoot = projectAbsolutePath
       this.scriptName = scriptFileName
-      this.forceReload = true
+      // this.forceReload = true
     })
 
     val projectData = ProjectData(
@@ -47,29 +49,27 @@ class BibixProjectLoader(val projectRoot: Path, val scriptFileName: String) {
       externalLib.libraryId to libraryData
     }
 
-    val ktjvmSdks = projectInfo.sdks.ktjvmSdksList.associate { ktjvmSdk ->
-      val sdkData = KtJvmSdkData(
-        version = ktjvmSdk.version,
-        sdkLibraryIds = ktjvmSdk.sdkLibraryIdsList.toList()
-      )
+    projectInfo.sdkInfo.ktjvmSdksList.forEach { ktjvmSdk ->
       projectNode.createChild(
         BibixSdkData.KEY,
-        BibixKtJvmSdkData(BibixConstants.SYSTEM_ID, sdkData)
+        BibixKtJvmSdkData(
+          BibixConstants.SYSTEM_ID,
+          version = ktjvmSdk.version,
+          sdkLibraryIds = ktjvmSdk.sdkLibraryIdsList.toList()
+        )
       )
-      sdkData.version to sdkData
     }
-    val scalaSdks = projectInfo.sdks.scalaSdksList.associate { scalaSdk ->
-      val sdkData = ScalaSdkData(
-        version = scalaSdk.version,
-        langVersion = scalaSdk.scalaLanguageVersion,
-        compilerClasspaths = scalaSdk.compilerClasspathsList.toList(),
-        sdkLibraryIds = scalaSdk.sdkLibraryIdsList.toList()
-      )
+    projectInfo.sdkInfo.scalaSdksList.forEach { scalaSdk ->
       projectNode.createChild(
         BibixSdkData.KEY,
-        BibixScalaSdkData(BibixConstants.SYSTEM_ID, sdkData)
+        BibixScalaSdkData(
+          BibixConstants.SYSTEM_ID,
+          version = scalaSdk.version,
+          langVersion = scalaSdk.scalaLanguageVersion,
+          compilerClasspaths = scalaSdk.compilerClasspathsList.toList(),
+          sdkLibraryIds = scalaSdk.sdkLibraryIdsList.toList()
+        )
       )
-      sdkData.version to sdkData
     }
 
     val moduleDataMap = projectInfo.modulesList.associate { module ->
@@ -105,35 +105,27 @@ class BibixProjectLoader(val projectRoot: Path, val scriptFileName: String) {
         moduleNode.createChild(ProjectKeys.LIBRARY_DEPENDENCY, libraryDepData)
       }
 
-      module.moduleSdksList.forEach { moduleSdk ->
-        when (moduleSdk.sdkCase) {
-          BibixIntellijProto.ModuleSdk.SdkCase.JDK_VERSION ->
+      module.usingSdksList.forEach { usingSdk ->
+        when (usingSdk.sdkCase) {
+          BibixIntellijProto.SdkVersion.SdkCase.JDK_VERSION ->
             moduleNode.createChild(
-              BibixModuleSdkData.KEY,
-              BibixModuleJdkData(BibixConstants.SYSTEM_ID, moduleSdk.jdkVersion)
+              BibixUsingSdkVersionData.KEY,
+              BibixUsingJdkVersionData(BibixConstants.SYSTEM_ID, usingSdk.jdkVersion)
             )
 
-          BibixIntellijProto.ModuleSdk.SdkCase.KTJVM_SDK_VERSION ->
+          BibixIntellijProto.SdkVersion.SdkCase.KTJVM_SDK_VERSION ->
             moduleNode.createChild(
-              BibixModuleSdkData.KEY,
-              BibixModuleKtJvmSdkData(
-                BibixConstants.SYSTEM_ID,
-                moduleSdk.ktjvmSdkVersion,
-                ktjvmSdks.getValue(moduleSdk.ktjvmSdkVersion)
-              ),
+              BibixUsingSdkVersionData.KEY,
+              BibixUsingKtJvmSdkVersionData(BibixConstants.SYSTEM_ID, usingSdk.ktjvmSdkVersion),
             )
 
-          BibixIntellijProto.ModuleSdk.SdkCase.SCALA_SDK_VERSION ->
+          BibixIntellijProto.SdkVersion.SdkCase.SCALA_SDK_VERSION ->
             moduleNode.createChild(
-              BibixModuleSdkData.KEY,
-              BibixModuleScalaSdkData(
-                BibixConstants.SYSTEM_ID,
-                moduleSdk.scalaSdkVersion,
-                scalaSdks.getValue(moduleSdk.scalaSdkVersion)
-              )
+              BibixUsingSdkVersionData.KEY,
+              BibixUsingScalaSdkVersionData(BibixConstants.SYSTEM_ID, usingSdk.scalaSdkVersion)
             )
 
-          BibixIntellijProto.ModuleSdk.SdkCase.SDK_NOT_SET -> {
+          BibixIntellijProto.SdkVersion.SdkCase.SDK_NOT_SET, null -> {
             // Shouldn't happen
           }
         }

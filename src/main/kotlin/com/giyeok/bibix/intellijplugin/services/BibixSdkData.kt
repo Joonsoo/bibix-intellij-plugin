@@ -3,8 +3,9 @@ package com.giyeok.bibix.intellijplugin.services
 import com.intellij.openapi.externalSystem.model.Key
 import com.intellij.openapi.externalSystem.model.ProjectSystemId
 import com.intellij.openapi.externalSystem.model.project.AbstractNamedData
-import java.io.Serializable
+import kotlinx.serialization.Serializable
 
+@Serializable
 sealed class BibixSdkData(owner: ProjectSystemId, name: String) : AbstractNamedData(owner, name) {
   companion object {
     val KEY = Key.create(BibixSdkData::class.java, 600)
@@ -26,22 +27,18 @@ class BibixJavaSdkData(owner: ProjectSystemId, val jdkVersion: String) :
 //  repeated string sdk_library_ids = 4;
 //}
 
-@kotlinx.serialization.Serializable
-data class KtJvmSdkData(
+@Serializable
+class BibixKtJvmSdkData(
+  owner: ProjectSystemId,
   val version: String,
   val sdkLibraryIds: List<String>
-) : Serializable
+) : BibixSdkData(owner, "bibix_ktjvm_sdk_data")
 
-@kotlinx.serialization.Serializable
-data class ScalaSdkData(
+@Serializable
+class BibixScalaSdkData(
+  owner: ProjectSystemId,
   val version: String,
   val langVersion: String,
   val compilerClasspaths: List<String>,
   val sdkLibraryIds: List<String>
-) : Serializable
-
-class BibixKtJvmSdkData(owner: ProjectSystemId, val sdk: KtJvmSdkData) :
-  BibixSdkData(owner, "bibix_ktjvm_sdk_data")
-
-class BibixScalaSdkData(owner: ProjectSystemId, val sdk: ScalaSdkData) :
-  BibixSdkData(owner, "bibix_scala_sdk_data")
+) : BibixSdkData(owner, "bibix_scala_sdk_data")

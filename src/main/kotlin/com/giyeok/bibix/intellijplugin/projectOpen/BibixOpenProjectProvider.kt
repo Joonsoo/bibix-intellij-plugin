@@ -24,6 +24,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.workspaceModel.storage.impl.url.toVirtualFileUrl
 import java.nio.file.Path
 
 class BibixOpenProjectProvider : AbstractOpenProjectProvider() {

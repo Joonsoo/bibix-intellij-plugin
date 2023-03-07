@@ -8,14 +8,24 @@
     <depends>com.intellij.modules.java</depends>
     <depends>org.intellij.scala</depends>
 
+    <actions>
+        <action id="bibix.SyncBuildFile" class="com.giyeok.bibix.intellijplugin.SyncBuildFileAction"/>
+    </actions>
+
     <extensions defaultExtensionNs="com.intellij">
         <externalSystemManager implementation="com.giyeok.bibix.intellijplugin.system.BibixManager"/>
+        <postStartupActivity implementation="com.giyeok.bibix.intellijplugin.system.BibixManager"/>
         <projectOpenProcessor id="bibix"
                               implementation="com.giyeok.bibix.intellijplugin.projectOpen.BibixProjectOpenProcessor"/>
+<!--        <projectImportBuilder implementation="com.giyeok.bibix.intellijplugin.projectImport.BibixProjectImportBuilder"/>-->
+<!--        <projectImportProvider-->
+<!--                implementation="com.giyeok.bibix.intellijplugin.projectImport.BibixProjectImportProvider"/>-->
+
         <externalProjectDataService
                 implementation="com.giyeok.bibix.intellijplugin.services.BibixSdkDataService"/>
         <externalProjectDataService
-                implementation="com.giyeok.bibix.intellijplugin.services.BibixModuleSdkDataService"/>
+                implementation="com.giyeok.bibix.intellijplugin.services.BibixUsingSdkVersionDataService"/>
+
         <projectService serviceImplementation="com.giyeok.bibix.intellijplugin.settings.BibixSettings"/>
         <projectService serviceImplementation="com.giyeok.bibix.intellijplugin.settings.BibixProjectSettings"/>
         <projectService serviceImplementation="com.giyeok.bibix.intellijplugin.settings.BibixLocalSettings"/>
@@ -23,6 +33,8 @@
         <configurationType implementation="com.giyeok.bibix.intellijplugin.BibixExternalTaskConfigurationType"/>
         <toolWindow id="Bibix" anchor="right" icon="BibixIcons.Bibix"
                     factoryClass="com.giyeok.bibix.intellijplugin.ui.BibixToolWindowFactory"/>
+
+        <moduleBuilder builderClass="com.giyeok.bibix.intellijplugin.project.BibixModuleBuilder"/>
     </extensions>
 
     <actions>

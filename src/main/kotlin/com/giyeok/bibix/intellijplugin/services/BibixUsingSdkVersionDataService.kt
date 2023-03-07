@@ -17,11 +17,12 @@ import com.intellij.openapi.roots.ui.configuration.UnknownSdkDownloadableSdkFix
 import com.intellij.openapi.roots.ui.configuration.lookupSdk
 
 // 모듈이 사용하는 SDK를 설정하는 서비스
-class BibixModuleSdkDataService : AbstractProjectDataService<BibixModuleSdkData, Project>() {
-  override fun getTargetDataKey(): Key<BibixModuleSdkData> = BibixModuleSdkData.KEY
+class BibixUsingSdkVersionDataService :
+  AbstractProjectDataService<BibixUsingSdkVersionData, Project>() {
+  override fun getTargetDataKey(): Key<BibixUsingSdkVersionData> = BibixUsingSdkVersionData.KEY
 
   override fun importData(
-    toImport: MutableCollection<out DataNode<BibixModuleSdkData>>,
+    toImport: MutableCollection<out DataNode<BibixUsingSdkVersionData>>,
     projectData: ProjectData?,
     project: Project,
     modelsProvider: IdeModifiableModelsProvider
@@ -34,12 +35,13 @@ class BibixModuleSdkDataService : AbstractProjectDataService<BibixModuleSdkData,
   }
 
   fun applyJdks(
-    toImport: Collection<DataNode<BibixModuleSdkData>>,
+    toImport: Collection<DataNode<BibixUsingSdkVersionData>>,
     project: Project,
     modelsProvider: IdeModifiableModelsProvider
   ) {
-    val jdkNodes = toImport.filter { it.data is BibixModuleJdkData }
-    val requiredJdkVersions = jdkNodes.map { (it.data as BibixModuleJdkData).jdkVersion }.distinct()
+    val jdkNodes = toImport.filter { it.data is BibixUsingJdkVersionData }
+    val requiredJdkVersions =
+      jdkNodes.map { (it.data as BibixUsingJdkVersionData).jdkVersion }.distinct()
     val sdks = requiredJdkVersions.associateWith { sdkName ->
       lookupSdk { builder: SdkLookupBuilder ->
         builder
@@ -50,9 +52,9 @@ class BibixModuleSdkDataService : AbstractProjectDataService<BibixModuleSdkData,
     }
 
     val projectJdkNode =
-      jdkNodes.find { it.parent?.data is ProjectData && it.data is BibixModuleJdkData }
+      jdkNodes.find { it.parent?.data is ProjectData && it.data is BibixUsingJdkVersionData }
 
-    val projectSdk = sdks[(projectJdkNode?.data as? BibixModuleJdkData)?.jdkVersion]
+    val projectSdk = sdks[(projectJdkNode?.data as? BibixUsingJdkVersionData)?.jdkVersion]
 
     if (projectSdk != null) {
       WriteCommandAction.runWriteCommandAction(project) {
@@ -63,7 +65,7 @@ class BibixModuleSdkDataService : AbstractProjectDataService<BibixModuleSdkData,
     for (jdkNode in jdkNodes) {
       val moduleNode = jdkNode.getParent(ModuleData::class.java) ?: continue
       val module = moduleNode.getUserData(AbstractModuleDataService.MODULE_KEY) ?: continue
-      val sdkName = (jdkNode.data as BibixModuleJdkData).jdkVersion
+      val sdkName = (jdkNode.data as BibixUsingJdkVersionData).jdkVersion
       val sdk = sdks[sdkName]
 
       val modifiableRootModel = modelsProvider.getModifiableRootModel(module)
@@ -79,11 +81,11 @@ class BibixModuleSdkDataService : AbstractProjectDataService<BibixModuleSdkData,
   }
 
   fun applyKtJvmSdks(
-    toImport: Collection<DataNode<BibixModuleSdkData>>,
+    toImport: Collection<DataNode<BibixUsingSdkVersionData>>,
     project: Project,
     modelsProvider: IdeModifiableModelsProvider
   ) {
-    val sdkNodes = toImport.filter { it.data is BibixModuleKtJvmSdkData }
+    val sdkNodes = toImport.filter { it.data is BibixUsingKtJvmSdkVersionData }
     for (sdkNode in sdkNodes) {
       val moduleNode = sdkNode.getParent(ModuleData::class.java) ?: continue
       val module = moduleNode.getUserData(AbstractModuleDataService.MODULE_KEY) ?: continue
@@ -94,11 +96,11 @@ class BibixModuleSdkDataService : AbstractProjectDataService<BibixModuleSdkData,
   }
 
   fun applyScalaSdks(
-    toImport: Collection<DataNode<BibixModuleSdkData>>,
+    toImport: Collection<DataNode<BibixUsingSdkVersionData>>,
     project: Project,
     modelsProvider: IdeModifiableModelsProvider
   ) {
-    val sdkNodes = toImport.filter { it.data is BibixModuleScalaSdkData }
+    val sdkNodes = toImport.filter { it.data is BibixUsingScalaSdkVersionData }
 
     for (sdkNode in sdkNodes) {
       val moduleNode = sdkNode.getParent(ModuleData::class.java) ?: continue
