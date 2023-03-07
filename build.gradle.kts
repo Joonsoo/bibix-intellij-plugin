@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.giyeok.bibix"
-version = "0.0.3-SNAPSHOT"
+version = "0.0.5"
 
 sourceSets {
   getByName("main") {
@@ -58,7 +58,7 @@ tasks {
   }
 
   patchPluginXml {
-    version.set("0.0.3")
+    version.set("0.0.5")
     sinceBuild.set("221")
     untilBuild.set("231.*")
   }
