@@ -101,7 +101,7 @@ class BibixProjectLoader(val projectRoot: Path, val scriptFileName: String) {
         val libraryData = projectLibrariesMap.getValue(libraryId)
         val libraryDepData =
           LibraryDependencyData(moduleNode.data, libraryData, LibraryLevel.PROJECT)
-        libraryDepData.isExported = true
+        // libraryDepData.isExported = true
         moduleNode.createChild(ProjectKeys.LIBRARY_DEPENDENCY, libraryDepData)
       }
 
@@ -140,7 +140,7 @@ class BibixProjectLoader(val projectRoot: Path, val scriptFileName: String) {
       module.moduleDepsList.forEach { moduleDep ->
         val moduleData = moduleDataMap.getValue(moduleDep).first
         val moduleDepData = ModuleDependencyData(ownerModuleData, moduleData)
-        moduleDepData.isExported = true
+        // moduleDepData.isExported = true
         ownerModuleNode.createChild(ProjectKeys.MODULE_DEPENDENCY, moduleDepData)
       }
     }
