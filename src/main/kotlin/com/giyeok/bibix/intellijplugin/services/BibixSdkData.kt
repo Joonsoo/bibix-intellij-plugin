@@ -12,6 +12,7 @@ sealed class BibixSdkData(owner: ProjectSystemId, name: String) : AbstractNamedD
   }
 }
 
+@Serializable
 class BibixJavaSdkData(owner: ProjectSystemId, val jdkVersion: String) :
   BibixSdkData(owner, "bibix_java_sdk_data")
 

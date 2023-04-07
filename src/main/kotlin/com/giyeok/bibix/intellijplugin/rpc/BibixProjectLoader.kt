@@ -9,6 +9,7 @@ import com.giyeok.bibix.intellijplugin.system.BibixProjectResolverUtil
 import com.intellij.openapi.externalSystem.model.DataNode
 import com.intellij.openapi.externalSystem.model.ProjectKeys
 import com.intellij.openapi.externalSystem.model.project.*
+import com.intellij.openapi.roots.DependencyScope
 import io.grpc.ManagedChannel
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString
@@ -97,10 +98,16 @@ class BibixProjectLoader(val projectRoot: Path, val scriptFileName: String) {
         moduleNode.createChild(ProjectKeys.CONTENT_ROOT, contentRootData)
       }
 
-      module.libraryDepsList.forEach { libraryId ->
-        val libraryData = projectLibrariesMap.getValue(libraryId)
+      module.libraryDepsList.forEach { libraryDep ->
+        val libraryData = projectLibrariesMap.getValue(libraryDep.libraryName)
         val libraryDepData =
           LibraryDependencyData(moduleNode.data, libraryData, LibraryLevel.PROJECT)
+        libraryDepData.scope = when (libraryDep.dependencyType) {
+          BibixIntellijProto.DependencyType.DEPENDENCY_UNSPECIFIED -> TODO()
+          BibixIntellijProto.DependencyType.COMPILE_DEPENDENCY -> DependencyScope.COMPILE
+          BibixIntellijProto.DependencyType.RUNTIME_DEPENDENCY -> DependencyScope.RUNTIME
+          BibixIntellijProto.DependencyType.UNRECOGNIZED -> TODO()
+        }
         // libraryDepData.isExported = true
         moduleNode.createChild(ProjectKeys.LIBRARY_DEPENDENCY, libraryDepData)
       }
@@ -138,8 +145,14 @@ class BibixProjectLoader(val projectRoot: Path, val scriptFileName: String) {
       val (ownerModuleData, ownerModuleNode) = moduleDataMap.getValue(module.moduleName)
 
       module.moduleDepsList.forEach { moduleDep ->
-        val moduleData = moduleDataMap.getValue(moduleDep).first
+        val moduleData = moduleDataMap.getValue(moduleDep.moduleName).first
         val moduleDepData = ModuleDependencyData(ownerModuleData, moduleData)
+        moduleDepData.scope = when (moduleDep.dependencyType) {
+          BibixIntellijProto.DependencyType.DEPENDENCY_UNSPECIFIED -> TODO()
+          BibixIntellijProto.DependencyType.COMPILE_DEPENDENCY -> DependencyScope.COMPILE
+          BibixIntellijProto.DependencyType.RUNTIME_DEPENDENCY -> DependencyScope.RUNTIME
+          BibixIntellijProto.DependencyType.UNRECOGNIZED -> TODO()
+        }
         // moduleDepData.isExported = true
         ownerModuleNode.createChild(ProjectKeys.MODULE_DEPENDENCY, moduleDepData)
       }
