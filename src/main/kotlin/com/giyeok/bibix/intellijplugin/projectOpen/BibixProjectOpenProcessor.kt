@@ -4,8 +4,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.projectImport.ProjectOpenProcessor
 
-class BibixProjectOpenProcessor : ProjectOpenProcessor() {
-  override fun getName(): String = "bibix"
+class BibixProjectOpenProcessor: ProjectOpenProcessor() {
+  override val name: String
+    get() = "bibix"
 
   override fun canOpenProject(file: VirtualFile): Boolean {
     return canOpenBibixProject(file)

@@ -27,7 +27,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.workspaceModel.storage.impl.url.toVirtualFileUrl
 import java.nio.file.Path
 
-class BibixOpenProjectProvider : AbstractOpenProjectProvider() {
+class BibixOpenProjectProvider: AbstractOpenProjectProvider() {
   override val systemId: ProjectSystemId = BibixConstants.SYSTEM_ID
 
   override fun isProjectFile(file: VirtualFile): Boolean {
@@ -46,13 +46,13 @@ class BibixOpenProjectProvider : AbstractOpenProjectProvider() {
     return super.canOpenProject(file)
   }
 
-  override fun openProject(
-    projectFile: VirtualFile,
-    projectToClose: Project?,
-    forceOpenInNewFrame: Boolean
-  ): Project? {
-    return super.openProject(projectFile, projectToClose, forceOpenInNewFrame)
-  }
+//  override fun openProject(
+//    projectFile: VirtualFile,
+//    projectToClose: Project?,
+//    forceOpenInNewFrame: Boolean
+//  ): Project? {
+//    return super.openProject(projectFile, projectToClose, forceOpenInNewFrame)
+//  }
 
   override fun linkToExistingProject(projectFile: VirtualFile, project: Project) {
     val bibixProjectSettings = createLinkSettings(projectFile.toNioPath(), project)
@@ -88,7 +88,7 @@ class BibixOpenProjectProvider : AbstractOpenProjectProvider() {
     project: Project,
     externalProjectPath: String
   ): ExternalProjectRefreshCallback {
-    return object : ExternalProjectRefreshCallback {
+    return object: ExternalProjectRefreshCallback {
       override fun onSuccess(externalProject: DataNode<ProjectData>?) {
         if (externalProject == null) return
         selectDataToImport(project, externalProjectPath, externalProject)

@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.giyeok.bibix"
-version = "0.0.6"
+version = "0.0.7"
 
 sourceSets {
   getByName("main") {
@@ -37,10 +37,10 @@ dependencies {
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-  version.set("2022.1.4")
+  version.set("2023.1")
   type.set("IC") // Target IDE Platform
 
-  plugins.set(listOf("com.intellij.java", "org.intellij.scala:2022.1.16"))
+  plugins.set(listOf("com.intellij.java", "org.intellij.scala:2023.1.16"))
 }
 
 tasks {

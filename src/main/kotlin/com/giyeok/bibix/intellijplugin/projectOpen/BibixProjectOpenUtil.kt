@@ -8,6 +8,7 @@ import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.ui.ValidationInfo
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.io.systemIndependentPath
+import kotlinx.coroutines.runBlocking
 import java.nio.file.Path
 
 fun canOpenBibixProject(file: VirtualFile): Boolean =
@@ -17,8 +18,9 @@ fun openBibixProject(
   projectFile: VirtualFile,
   projectToClose: Project?,
   forceOpenInNewFrame: Boolean
-): Project? =
+): Project? = runBlocking {
   BibixOpenProjectProvider().openProject(projectFile, projectToClose, forceOpenInNewFrame)
+}
 
 fun canLinkAndRefreshBibixProject(
   projectFilePath: String,

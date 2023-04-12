@@ -148,10 +148,9 @@ class BibixProjectLoader(val projectRoot: Path, val scriptFileName: String) {
         val moduleData = moduleDataMap.getValue(moduleDep.moduleName).first
         val moduleDepData = ModuleDependencyData(ownerModuleData, moduleData)
         moduleDepData.scope = when (moduleDep.dependencyType) {
-          BibixIntellijProto.DependencyType.DEPENDENCY_UNSPECIFIED -> TODO()
           BibixIntellijProto.DependencyType.COMPILE_DEPENDENCY -> DependencyScope.COMPILE
           BibixIntellijProto.DependencyType.RUNTIME_DEPENDENCY -> DependencyScope.RUNTIME
-          BibixIntellijProto.DependencyType.UNRECOGNIZED -> TODO()
+          else -> TODO()
         }
         // moduleDepData.isExported = true
         ownerModuleNode.createChild(ProjectKeys.MODULE_DEPENDENCY, moduleDepData)
