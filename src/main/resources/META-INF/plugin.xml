@@ -17,9 +17,9 @@
         <postStartupActivity implementation="com.giyeok.bibix.intellijplugin.system.BibixManager"/>
         <projectOpenProcessor id="bibix"
                               implementation="com.giyeok.bibix.intellijplugin.projectOpen.BibixProjectOpenProcessor"/>
-<!--        <projectImportBuilder implementation="com.giyeok.bibix.intellijplugin.projectImport.BibixProjectImportBuilder"/>-->
-<!--        <projectImportProvider-->
-<!--                implementation="com.giyeok.bibix.intellijplugin.projectImport.BibixProjectImportProvider"/>-->
+        <projectImportBuilder implementation="com.giyeok.bibix.intellijplugin.projectImport.BibixProjectImportBuilder"/>
+        <projectImportProvider
+                implementation="com.giyeok.bibix.intellijplugin.projectImport.BibixProjectImportProvider"/>
 
         <externalProjectDataService
                 implementation="com.giyeok.bibix.intellijplugin.services.BibixSdkDataService"/>

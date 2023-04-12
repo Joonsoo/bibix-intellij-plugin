@@ -9,10 +9,10 @@ import com.intellij.openapi.components.Storage
 import com.intellij.openapi.externalSystem.settings.AbstractExternalSystemSettings
 import com.intellij.openapi.externalSystem.settings.ExternalSystemSettingsListener
 import com.intellij.openapi.project.Project
-import java.util.TreeSet
+import java.util.*
 
 @State(name = "BibixSettings", storages = [Storage("bibix.xml")])
-class BibixSettings(project: Project) :
+class BibixSettings(project: Project):
   AbstractExternalSystemSettings<
     BibixSettings,
     BibixProjectSettings,
@@ -23,15 +23,11 @@ class BibixSettings(project: Project) :
       project.getService(BibixSettings::class.java)
   }
 
-  @Deprecated("")
-  override fun subscribe(listener: ExternalSystemSettingsListener<BibixProjectSettings>) {
-  }
-
   override fun subscribe(
     listener: ExternalSystemSettingsListener<BibixProjectSettings>,
     parentDisposable: Disposable
   ) {
-    doSubscribe(object : BibixSettingsListener {}, parentDisposable)
+    doSubscribe(object: BibixSettingsListener {}, parentDisposable)
   }
 
   override fun copyExtraSettingsFrom(settings: BibixSettings) {
@@ -52,7 +48,7 @@ class BibixSettings(project: Project) :
     publisher.onProjectsLoaded(listOf())
   }
 
-  class MyState : State<BibixProjectSettings> {
+  class MyState: State<BibixProjectSettings> {
     private val myProjectSettings = TreeSet<BibixProjectSettings>()
 
     override fun getLinkedExternalProjectsSettings(): MutableSet<BibixProjectSettings> {

@@ -6,21 +6,8 @@ import com.intellij.openapi.externalSystem.util.ExternalSystemBundle
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.ui.ValidationInfo
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.io.systemIndependentPath
-import kotlinx.coroutines.runBlocking
 import java.nio.file.Path
-
-fun canOpenBibixProject(file: VirtualFile): Boolean =
-  BibixOpenProjectProvider().canOpenProject(file)
-
-fun openBibixProject(
-  projectFile: VirtualFile,
-  projectToClose: Project?,
-  forceOpenInNewFrame: Boolean
-): Project? = runBlocking {
-  BibixOpenProjectProvider().openProject(projectFile, projectToClose, forceOpenInNewFrame)
-}
 
 fun canLinkAndRefreshBibixProject(
   projectFilePath: String,
@@ -36,10 +23,6 @@ fun canLinkAndRefreshBibixProject(
     }
   }
   return false
-}
-
-fun linkAndRefreshBibixProject(projectFilePath: String, project: Project) {
-  BibixOpenProjectProvider().linkToExistingProject(projectFilePath, project)
 }
 
 fun createLinkSettings(projectDirectory: Path, project: Project): BibixProjectSettings {

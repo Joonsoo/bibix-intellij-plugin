@@ -1,6 +1,6 @@
 package com.giyeok.bibix.intellijplugin.projectImport
 
-import com.giyeok.bibix.intellijplugin.BibixConstants.SYSTEM_ID
+import com.giyeok.bibix.intellijplugin.BibixConstants
 import com.intellij.externalSystem.JavaProjectData
 import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.openapi.diagnostic.Logger
@@ -15,11 +15,11 @@ import icons.BibixIcons
 import java.io.File
 import javax.swing.Icon
 
-class BibixProjectImportBuilder :
+class BibixProjectImportBuilder:
   AbstractExternalProjectImportBuilder<ImportFromBibixControl>(
     ProjectDataManager.getInstance(),
     { ImportFromBibixControl() },
-    SYSTEM_ID
+    BibixConstants.SYSTEM_ID
   ) {
   val LOG = Logger.getInstance(BibixProjectImportBuilder::class.java)
 
