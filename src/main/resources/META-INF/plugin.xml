@@ -3,7 +3,7 @@
     <id>com.github.joonsoo.bibixintellijplugin</id>
     <name>BibixIntellijPlugin</name>
     <vendor>joonsoo</vendor>
-    <version>0.0.1</version>
+    <version>0.0.8</version>
 
     <depends>com.intellij.modules.java</depends>
     <depends>org.intellij.scala</depends>
@@ -14,12 +14,11 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <externalSystemManager implementation="com.giyeok.bibix.intellijplugin.system.BibixManager"/>
-        <postStartupActivity implementation="com.giyeok.bibix.intellijplugin.system.BibixManager"/>
         <projectOpenProcessor id="bibix"
                               implementation="com.giyeok.bibix.intellijplugin.projectOpen.BibixProjectOpenProcessor"/>
-        <projectImportBuilder implementation="com.giyeok.bibix.intellijplugin.projectImport.BibixProjectImportBuilder"/>
-        <projectImportProvider
-                implementation="com.giyeok.bibix.intellijplugin.projectImport.BibixProjectImportProvider"/>
+        <!--        <projectImportBuilder implementation="com.giyeok.bibix.intellijplugin.projectImport.BibixProjectImportBuilder"/>-->
+        <!--        <projectImportProvider-->
+        <!--                implementation="com.giyeok.bibix.intellijplugin.projectImport.BibixProjectImportProvider"/>-->
 
         <externalProjectDataService
                 implementation="com.giyeok.bibix.intellijplugin.services.BibixSdkDataService"/>

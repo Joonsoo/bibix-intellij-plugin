@@ -1,11 +1,11 @@
 plugins {
   id("java")
-  id("org.jetbrains.kotlin.jvm") version "1.8.10"
-  id("org.jetbrains.intellij") version "1.13.1"
+  id("org.jetbrains.kotlin.jvm") version "1.8.0"
+  id("org.jetbrains.intellij") version "1.13.3"
 }
 
 group = "com.giyeok.bibix"
-version = "0.0.7"
+version = "0.0.8"
 
 sourceSets {
   getByName("main") {
@@ -50,7 +50,7 @@ tasks {
     targetCompatibility = "11"
   }
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "11"
+    kotlinOptions.jvmTarget = "17"
   }
 
   jar {
@@ -58,8 +58,8 @@ tasks {
   }
 
   patchPluginXml {
-    version.set("0.0.7")
-    sinceBuild.set("221")
+    version.set("0.0.8")
+    sinceBuild.set("231")
     untilBuild.set("231.*")
   }
 

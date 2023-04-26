@@ -2,8 +2,6 @@ package com.giyeok.bibix.intellijplugin.projectOpen
 
 import com.giyeok.bibix.intellijplugin.BibixConstants
 import com.giyeok.bibix.intellijplugin.settings.BibixSettings
-import com.giyeok.bibix.intellijplugin.projectOpen.createLinkSettings
-import com.giyeok.bibix.intellijplugin.projectOpen.updateBibixJvm
 import com.giyeok.bibix.intellijplugin.util.validateJavaHome
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.externalSystem.importing.AbstractOpenProjectProvider
@@ -24,35 +22,13 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.workspaceModel.storage.impl.url.toVirtualFileUrl
-import java.nio.file.Path
 
-class BibixOpenProjectProvider: AbstractOpenProjectProvider() {
+class BibixOpenProjectProvider : AbstractOpenProjectProvider() {
   override val systemId: ProjectSystemId = BibixConstants.SYSTEM_ID
 
   override fun isProjectFile(file: VirtualFile): Boolean {
     return !file.isDirectory && file.name == "build.bbx"
   }
-
-//  override fun linkAndRefreshProject(projectDirectory: Path, project: Project) {
-//    val bibixProjectSettings = createLinkSettings(projectDirectory, project)
-//
-//    attachBibixProjectAndRefresh(bibixProjectSettings, project)
-//
-//    validateJavaHome(project, projectDirectory)
-//  }
-
-  override fun canOpenProject(file: VirtualFile): Boolean {
-    return super.canOpenProject(file)
-  }
-
-//  override fun openProject(
-//    projectFile: VirtualFile,
-//    projectToClose: Project?,
-//    forceOpenInNewFrame: Boolean
-//  ): Project? {
-//    return super.openProject(projectFile, projectToClose, forceOpenInNewFrame)
-//  }
 
   override fun linkToExistingProject(projectFile: VirtualFile, project: Project) {
     val bibixProjectSettings = createLinkSettings(projectFile.toNioPath(), project)
@@ -88,7 +64,7 @@ class BibixOpenProjectProvider: AbstractOpenProjectProvider() {
     project: Project,
     externalProjectPath: String
   ): ExternalProjectRefreshCallback {
-    return object: ExternalProjectRefreshCallback {
+    return object : ExternalProjectRefreshCallback {
       override fun onSuccess(externalProject: DataNode<ProjectData>?) {
         if (externalProject == null) return
         selectDataToImport(project, externalProjectPath, externalProject)

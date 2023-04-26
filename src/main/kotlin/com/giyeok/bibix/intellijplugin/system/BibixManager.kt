@@ -17,14 +17,13 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
-import com.intellij.openapi.startup.StartupActivity
 import com.intellij.openapi.util.Pair
 import com.intellij.util.Function
 import com.intellij.util.PathUtil
 
 open class XX
 
-class BibixManager: XX(),
+class BibixManager : XX(),
   ExternalSystemAutoImportAware,
 //  ExternalSystemConfigurableAware,
   ExternalSystemManager<
@@ -40,19 +39,19 @@ class BibixManager: XX(),
 
   override fun getSettingsProvider(): Function<Project, BibixSettings> =
     Function { project ->
-//      LOG.warn("getSettingsProvider ${project.basePath}")
+      LOG.warn("getSettingsProvider ${project.basePath}")
       BibixSettings.getInstance(project)
     }
 
   override fun getLocalSettingsProvider(): Function<Project, BibixLocalSettings> =
     Function { project ->
-//      LOG.warn("getLocalSettingsProvider ${project.basePath}")
+      LOG.warn("getLocalSettingsProvider ${project.basePath}")
       BibixLocalSettings.getInstance(project)
     }
 
   override fun getExecutionSettingsProvider(): Function<Pair<Project, String>, BibixExecutionSettings> =
     Function { pair: Pair<Project, String> ->
-//      LOG.warn("getExecutionSettingsProvider $pair")
+      LOG.warn("getExecutionSettingsProvider $pair")
       BibixExecutionSettings()
     }
 
@@ -112,11 +111,11 @@ class BibixManager: XX(),
       val jarPath = PathUtil.getJarPathForClass(it)
       parameters.classPath.addFirst(jarPath)
     }
-    LOG.warn("remote cps: ${parameters.classPath}")
+    LOG.warn("${parameters.classPath}")
   }
 
   override fun getProjectResolverClass(): Class<out ExternalSystemProjectResolver<BibixExecutionSettings>> {
-//    LOG.warn("getProjectResolverClass")
+    LOG.warn("getProjectResolverClass")
     return BibixProjectResolver::class.java
   }
 
@@ -130,12 +129,11 @@ class BibixManager: XX(),
     changedFileOrDirPath: String,
     project: Project
   ): String? {
-//    LOG.warn("getAffectedExternalProjectPath $changedFileOrDirPath ${project.basePath}")
+    LOG.warn("getAffectedExternalProjectPath $changedFileOrDirPath ${project.basePath}")
     return changedFileOrDirPath
   }
 
   override suspend fun execute(project: Project) {
-//    LOG.warn("execute $project")
     // TODO
   }
 }
