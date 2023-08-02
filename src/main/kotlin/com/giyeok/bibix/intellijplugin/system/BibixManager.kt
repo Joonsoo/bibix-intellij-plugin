@@ -105,6 +105,7 @@ class BibixManager : XX(),
       // org.checkerframework.checker.nullness.compatqual.NullableType::class.java,
       // javax/annotation/javax.annotation-api/1.3.2/javax.annotation-api-1.3.2.jar
       javax.annotation.sql.DataSourceDefinitions::class.java,
+      io.perfmark.PerfMark::class.java,
     )
 
     classes.forEach {
