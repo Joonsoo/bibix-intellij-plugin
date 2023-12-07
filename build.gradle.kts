@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.giyeok.bibix"
-version = "0.0.8"
+version = "0.0.9"
 
 sourceSets {
   getByName("main") {
@@ -58,9 +58,9 @@ tasks {
   }
 
   patchPluginXml {
-    version.set("0.0.8")
-    sinceBuild.set("232")
-    untilBuild.set("232.*")
+    version.set("0.0.9")
+    sinceBuild.set("233")
+    untilBuild.set("233.*")
   }
 
   signPlugin {
