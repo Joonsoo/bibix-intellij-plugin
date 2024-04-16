@@ -4,16 +4,17 @@ import com.intellij.openapi.externalSystem.model.Key
 import com.intellij.openapi.externalSystem.model.ProjectSystemId
 import com.intellij.openapi.externalSystem.model.project.AbstractNamedData
 import kotlinx.serialization.Serializable
+import java.nio.file.Path
 
 @Serializable
-sealed class BibixSdkData(owner: ProjectSystemId, name: String) : AbstractNamedData(owner, name) {
+sealed class BibixSdkData(owner: ProjectSystemId, name: String): AbstractNamedData(owner, name) {
   companion object {
     val KEY = Key.create(BibixSdkData::class.java, 600)
   }
 }
 
 @Serializable
-class BibixJavaSdkData(owner: ProjectSystemId, val jdkVersion: String) :
+class BibixJavaSdkData(owner: ProjectSystemId, val jdkVersion: String):
   BibixSdkData(owner, "bibix_java_sdk_data")
 
 //message KotlinJvmSdk {
@@ -33,7 +34,7 @@ class BibixKtJvmSdkData(
   owner: ProjectSystemId,
   val version: String,
   val sdkLibraryIds: List<String>
-) : BibixSdkData(owner, "bibix_ktjvm_sdk_data")
+): BibixSdkData(owner, "bibix_ktjvm_sdk_data")
 
 @Serializable
 class BibixScalaSdkData(
@@ -42,4 +43,11 @@ class BibixScalaSdkData(
   val langVersion: String,
   val compilerClasspaths: List<String>,
   val sdkLibraryIds: List<String>
-) : BibixSdkData(owner, "bibix_scala_sdk_data")
+): BibixSdkData(owner, "bibix_scala_sdk_data")
+
+@Serializable
+class BibixProjectSetting(
+  owner: ProjectSystemId,
+  val outputPath: Path?,
+  val sdk: String?,
+): BibixSdkData(owner, "bibix_project_info")

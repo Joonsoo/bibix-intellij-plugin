@@ -6,6 +6,7 @@ import com.giyeok.bibix.intellij.loadProjectReq
 import com.giyeok.bibix.intellijplugin.BibixConstants
 import com.giyeok.bibix.intellijplugin.services.*
 import com.giyeok.bibix.intellijplugin.system.BibixProjectResolverUtil
+import com.intellij.openapi.externalSystem.model.ConfigurationDataImpl
 import com.intellij.openapi.externalSystem.model.DataNode
 import com.intellij.openapi.externalSystem.model.ProjectKeys
 import com.intellij.openapi.externalSystem.model.project.*
@@ -82,6 +83,7 @@ class BibixProjectLoader(val projectRoot: Path, val scriptFileName: String) {
         "$projectAbsolutePath/.idea",
         projectAbsolutePath,
       )
+
       val moduleNode = projectNode.createChild(ProjectKeys.MODULE, moduleData)
 
       if (module.contentRootsCount > 0) {

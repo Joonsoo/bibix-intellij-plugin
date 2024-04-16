@@ -8,14 +8,16 @@ import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsPr
 import com.intellij.openapi.externalSystem.service.project.manage.AbstractProjectDataService
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.CompilerProjectExtension
 import com.intellij.openapi.roots.impl.libraries.LibraryEx
+import com.intellij.platform.workspace.storage.impl.url.toVirtualFileUrl
 import org.jetbrains.plugins.scala.project.ScalaLibraryProperties
 import org.jetbrains.plugins.scala.project.ScalaLibraryType
 import scala.Option
 import java.io.File
 
 // 프로젝트에 사용할 수 있는 kotlin, scala SDK를 라이브러리로 추가해주는 서비스
-class BibixSdkDataService : AbstractProjectDataService<BibixSdkData, Project>() {
+class BibixSdkDataService: AbstractProjectDataService<BibixSdkData, Project>() {
   override fun getTargetDataKey(): Key<BibixSdkData> = BibixSdkData.KEY
 
   override fun importData(
@@ -25,6 +27,16 @@ class BibixSdkDataService : AbstractProjectDataService<BibixSdkData, Project>() 
     modelsProvider: IdeModifiableModelsProvider
   ) {
     super.importData(toImport, projectData, project, modelsProvider)
+
+    val projectSettings = toImport.map { it.data }.filterIsInstance<BibixProjectSetting>()
+    if (projectSettings.isNotEmpty()) {
+      val projectSetting = projectSettings.single()
+      projectSetting.outputPath?.let { outputPath ->
+        CompilerProjectExtension.getInstance(project)?.let { projectExt ->
+          projectExt.compilerOutputUrl = outputPath.toUri().toString()
+        }
+      }
+    }
 
     applyKtJvmSdks(toImport, project, modelsProvider)
     applyScalaSdks(toImport, project, modelsProvider)
@@ -39,7 +51,7 @@ class BibixSdkDataService : AbstractProjectDataService<BibixSdkData, Project>() 
     println(sdkNodes)
 //    val requiredSdkVersions = sdkNodes.map { (it.data as BibixKtJvmSdkData).sdk.version }.distinct()
 //    val sdks = requiredSdkVersions.associateWith { sdkName ->
-//      lookupSdk { builder: SdkLookupBuilder ->
+//      lookupSdk { builder: SdkLookupBuilder ->    !!.compilerOutput = VirtualFile
 //        builder.withSdkName(sdkName)
 //          .onDownloadableSdkSuggested { _: UnknownSdkDownloadableSdkFix? -> SdkLookupDecision.CONTINUE }
 //      }
