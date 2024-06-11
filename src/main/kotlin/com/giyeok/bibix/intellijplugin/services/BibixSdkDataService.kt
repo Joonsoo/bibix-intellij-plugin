@@ -3,14 +3,13 @@ package com.giyeok.bibix.intellijplugin.services
 import com.giyeok.bibix.intellijplugin.BibixConstants.SYSTEM_ID
 import com.intellij.openapi.externalSystem.model.DataNode
 import com.intellij.openapi.externalSystem.model.Key
-import com.intellij.openapi.externalSystem.model.project.*
+import com.intellij.openapi.externalSystem.model.project.ProjectData
 import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsProvider
 import com.intellij.openapi.externalSystem.service.project.manage.AbstractProjectDataService
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.CompilerProjectExtension
 import com.intellij.openapi.roots.impl.libraries.LibraryEx
-import com.intellij.platform.workspace.storage.impl.url.toVirtualFileUrl
 import org.jetbrains.plugins.scala.project.ScalaLibraryProperties
 import org.jetbrains.plugins.scala.project.ScalaLibraryType
 import scala.Option

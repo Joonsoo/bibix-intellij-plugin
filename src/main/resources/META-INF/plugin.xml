@@ -23,6 +23,8 @@
         <externalProjectDataService
                 implementation="com.giyeok.bibix.intellijplugin.services.BibixSdkDataService"/>
         <externalProjectDataService
+                implementation="com.giyeok.bibix.intellijplugin.services.BibixNativeLibLocationsDataService"/>
+        <externalProjectDataService
                 implementation="com.giyeok.bibix.intellijplugin.services.BibixUsingSdkVersionDataService"/>
 
         <projectService serviceImplementation="com.giyeok.bibix.intellijplugin.settings.BibixSettings"/>

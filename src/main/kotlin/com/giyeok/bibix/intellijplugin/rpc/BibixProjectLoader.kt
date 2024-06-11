@@ -6,7 +6,6 @@ import com.giyeok.bibix.intellij.loadProjectReq
 import com.giyeok.bibix.intellijplugin.BibixConstants
 import com.giyeok.bibix.intellijplugin.services.*
 import com.giyeok.bibix.intellijplugin.system.BibixProjectResolverUtil
-import com.intellij.openapi.externalSystem.model.ConfigurationDataImpl
 import com.intellij.openapi.externalSystem.model.DataNode
 import com.intellij.openapi.externalSystem.model.ProjectKeys
 import com.intellij.openapi.externalSystem.model.project.*
@@ -46,7 +45,14 @@ class BibixProjectLoader(val projectRoot: Path, val scriptFileName: String) {
         libraryData.addPath(LibraryPathType.SOURCE, src)
       }
 
-      projectNode.createChild(ProjectKeys.LIBRARY, libraryData)
+      val libraryNode = projectNode.createChild(ProjectKeys.LIBRARY, libraryData)
+
+      externalLib.nativeLibDirsList.forEach { loc ->
+        libraryNode.createChild(
+          BibixNativeLibLocsData.KEY,
+          BibixNativeLibLocsData(BibixConstants.SYSTEM_ID, loc)
+        )
+      }
 
       externalLib.libraryId to libraryData
     }
