@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.giyeok.bibix"
-version = "0.0.10"
+version = "0.0.11"
 
 sourceSets {
   getByName("main") {
@@ -34,15 +34,18 @@ dependencies {
   implementation("io.grpc:grpc-services:1.53.0")
   implementation("io.grpc:grpc-netty-shaded:1.53.0")
   implementation("io.grpc:grpc-kotlin-stub:1.3.0")
+
+  // https://mvnrepository.com/artifact/io.perfmark/perfmark-api
+  implementation("io.perfmark:perfmark-api:0.27.0")
 }
 
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-  version.set("2024.1")
+  version.set("2024.2")
   type.set("IC") // Target IDE Platform
 
-  plugins.set(listOf("com.intellij.java", "org.intellij.scala:2024.1.15"))
+  plugins.set(listOf("com.intellij.java", "org.intellij.scala:2024.2.20"))
 }
 
 tasks {
@@ -60,9 +63,9 @@ tasks {
   }
 
   patchPluginXml {
-    version.set("0.0.10")
-    sinceBuild.set("241")
-    untilBuild.set("241.*")
+    version.set("0.0.11")
+    sinceBuild.set("242")
+    untilBuild.set("242.*")
   }
 
   signPlugin {
