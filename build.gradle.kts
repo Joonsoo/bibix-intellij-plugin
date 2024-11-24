@@ -1,7 +1,7 @@
 plugins {
   id("java")
   id("org.jetbrains.kotlin.jvm") version "1.9.21"
-  id("org.jetbrains.intellij") version "1.17.3"
+  id("org.jetbrains.intellij.platform") version "2.1.0"
 }
 
 group = "com.giyeok.bibix"
@@ -23,9 +23,21 @@ sourceSets {
 
 repositories {
   mavenCentral()
+
+  intellijPlatform {
+    defaultRepositories()
+  }
 }
 
 dependencies {
+  intellijPlatform {
+    intellijIdeaCommunity("2024.3")
+
+    bundledPlugin("com.intellij.java")
+    plugin("org.intellij.scala", "2024.3.18")
+
+    instrumentationTools()
+  }
   implementation("com.google.protobuf:protobuf-java:3.25.3")
   implementation("com.google.protobuf:protobuf-java-util:3.25.3")
   implementation("com.google.protobuf:protobuf-kotlin:3.25.3")
@@ -39,23 +51,14 @@ dependencies {
   implementation("io.perfmark:perfmark-api:0.27.0")
 }
 
-// Configure Gradle IntelliJ Plugin
-// Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
-intellij {
-  version.set("2024.2")
-  type.set("IC") // Target IDE Platform
-
-  plugins.set(listOf("com.intellij.java", "org.intellij.scala:2024.2.20"))
-}
-
 tasks {
   // Set the JVM compatibility versions
   withType<JavaCompile> {
-    sourceCompatibility = "17"
-    targetCompatibility = "17"
+    sourceCompatibility = "21"
+    targetCompatibility = "21"
   }
   withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "17"
+    kotlinOptions.jvmTarget = "21"
   }
 
   jar {
@@ -63,9 +66,9 @@ tasks {
   }
 
   patchPluginXml {
-    version.set("0.0.11")
-    sinceBuild.set("242")
-    untilBuild.set("242.*")
+    version = "0.0.12"
+    sinceBuild.set("243")
+    untilBuild.set("243.*")
   }
 
   signPlugin {
