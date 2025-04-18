@@ -14,6 +14,8 @@ import org.jetbrains.plugins.scala.project.ScalaLibraryProperties
 import org.jetbrains.plugins.scala.project.ScalaLibraryType
 import scala.Option
 import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.Path
 
 // 프로젝트에 사용할 수 있는 kotlin, scala SDK를 라이브러리로 추가해주는 서비스
 class BibixSdkDataService: AbstractProjectDataService<BibixSdkData, Project>() {
@@ -107,7 +109,7 @@ class BibixSdkDataService: AbstractProjectDataService<BibixSdkData, Project>() {
           val libraryModel =
             (modelsProvider.getModifiableLibraryModel(sdkLibrary) as LibraryEx.ModifiableModelEx)
           libraryModel.kind = ScalaLibraryType.`Kind$`.`MODULE$`
-          val cpbuilder = scala.collection.immutable.`List$`.`MODULE$`.newBuilder<File>()
+          val cpbuilder = scala.collection.immutable.`List$`.`MODULE$`.newBuilder<Path>()
 //          sdkNode.getPaths(LibraryPathType.BINARY).map { File(it) }.forEach {
 //            cpbuilder.addOne(it)
 //          }
@@ -116,11 +118,11 @@ class BibixSdkDataService: AbstractProjectDataService<BibixSdkData, Project>() {
             cpbuilder.result(),
             scala.collection.immutable.`List$`.`MODULE$`.empty(),
           )
-          val compilerCpBuilder = scala.collection.immutable.`List$`.`MODULE$`.newBuilder<File>()
+          val compilerCpBuilder = scala.collection.immutable.`List$`.`MODULE$`.newBuilder<Path>()
 
           scalaSdkDataMap[data.version]?.let { sdkInfo ->
             sdkInfo.compilerClasspaths.forEach { compilerCp ->
-              compilerCpBuilder.addOne(File(compilerCp))
+              compilerCpBuilder.addOne(Path(compilerCp))
             }
           }
 

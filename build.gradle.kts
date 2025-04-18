@@ -1,11 +1,11 @@
 plugins {
   id("java")
-  id("org.jetbrains.kotlin.jvm") version "1.9.21"
-  id("org.jetbrains.intellij.platform") version "2.1.0"
+  id("org.jetbrains.kotlin.jvm") version "2.1.20"
+  id("org.jetbrains.intellij.platform") version "2.5.0"
 }
 
 group = "com.giyeok.bibix"
-version = "0.0.11"
+version = "0.0.12"
 
 sourceSets {
   getByName("main") {
@@ -31,10 +31,10 @@ repositories {
 
 dependencies {
   intellijPlatform {
-    intellijIdeaCommunity("2024.3")
+    intellijIdeaCommunity("2025.1")
 
     bundledPlugin("com.intellij.java")
-    plugin("org.intellij.scala", "2024.3.18")
+    plugin("org.intellij.scala", "2025.1.20")
 
     instrumentationTools()
   }
@@ -66,9 +66,9 @@ tasks {
   }
 
   patchPluginXml {
-    version = "0.0.12"
-    sinceBuild.set("243")
-    untilBuild.set("243.*")
+    version = "0.0.13"
+    sinceBuild.set("251")
+    untilBuild.set("251.*")
   }
 
   signPlugin {
