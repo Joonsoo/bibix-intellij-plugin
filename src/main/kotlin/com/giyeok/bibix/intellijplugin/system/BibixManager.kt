@@ -76,9 +76,10 @@ class BibixManager : XX(),
       com.google.j2objc.annotations.AutoreleasePool::class.java,
       // com/google/protobuf/protobuf-kotlin/3.22.0/protobuf-kotlin-3.22.0.jar
       com.google.protobuf.AnyKt::class.java,
-      // io/grpc/grpc-services/1.53.0/grpc-services-1.53.0.jar
+      // io/grpc/grpc-services/1.73.0/grpc-services-1.73.0.jar
       io.grpc.channelz.v1.GetSocketResponseOrBuilder::class.java,
-      // io/grpc/grpc-protobuf/1.53.0/grpc-protobuf-1.53.0.jar
+      io.grpc.protobuf.services.internal.HealthCheckingRoundRobinLoadBalancerProvider::class.java,
+      // io/grpc/grpc-protobuf/1.73.0/grpc-protobuf-1.73.0.jar
       io.grpc.protobuf.ProtoServiceDescriptorSupplier::class.java,
       // io/grpc/grpc-api/1.53.0/grpc-api-1.53.0.jar
       io.grpc.MethodDescriptor::class.java,
@@ -91,11 +92,13 @@ class BibixManager : XX(),
       // io/grpc/grpc-stub/1.53.0/grpc-stub-1.53.0.jar
       io.grpc.stub.ServerCalls::class.java,
       // io/grpc/grpc-core/1.53.0/grpc-core-1.53.0.jar
-      io.grpc.inprocess.InProcessChannelBuilder::class.java,
+      io.grpc.internal.AbstractReadableBuffer::class.java,
       // io/grpc/grpc-netty-shaded/1.53.0/grpc-netty-shaded-1.53.0.jar
       io.grpc.netty.shaded.io.grpc.netty.InternalNettyChannelCredentials::class.java,
       // io/grpc/grpc-kotlin-stub/1.3.0/grpc-kotlin-stub-1.3.0.jar
       io.grpc.kotlin.ClientCalls::class.java,
+      // io/grpc/grpc-util/1.73.0
+      io.grpc.util.CertificateUtils::class.java,
       // com/google/guava/failureaccess/1.0.1/failureaccess-1.0.1.jar
       com.google.common.util.concurrent.internal.InternalFutureFailureAccess::class.java,
       // com/google/guava/listenablefuture/9999.0-empty-to-avoid-conflict-with-guava/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar

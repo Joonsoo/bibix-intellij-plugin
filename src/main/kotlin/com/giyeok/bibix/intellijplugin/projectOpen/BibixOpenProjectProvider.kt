@@ -22,12 +22,18 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.resolveFromRootOrRelative
 
 class BibixOpenProjectProvider : AbstractOpenProjectProvider() {
   override val systemId: ProjectSystemId = BibixConstants.SYSTEM_ID
 
   override fun isProjectFile(file: VirtualFile): Boolean {
     return !file.isDirectory && file.name == "build.bbx"
+  }
+
+  override fun canOpenProject(file: VirtualFile): Boolean {
+    return isProjectFile(file) ||
+      (file.isDirectory && file.resolveFromRootOrRelative("build.bbx")?.exists() == true)
   }
 
   override fun linkToExistingProject(projectFile: VirtualFile, project: Project) {

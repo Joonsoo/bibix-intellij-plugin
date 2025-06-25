@@ -1,11 +1,11 @@
 plugins {
   id("java")
-  id("org.jetbrains.kotlin.jvm") version "2.1.20"
-  id("org.jetbrains.intellij.platform") version "2.5.0"
+  id("org.jetbrains.kotlin.jvm") version "2.2.0"
+  id("org.jetbrains.intellij.platform") // version "2.6.0"
 }
 
 group = "com.giyeok.bibix"
-version = "0.0.12"
+version = "0.0.9"
 
 sourceSets {
   getByName("main") {
@@ -30,54 +30,66 @@ repositories {
 }
 
 dependencies {
+  implementation("com.google.protobuf:protobuf-java:3.25.8")
+  implementation("com.google.protobuf:protobuf-java-util:3.25.8")
+  implementation("com.google.protobuf:protobuf-kotlin:3.25.8")
+  implementation("io.grpc:grpc-services:1.73.0")
+  implementation("io.grpc:grpc-protobuf:1.73.0")
+  implementation("io.grpc:grpc-protobuf-lite:1.73.0")
+  implementation("io.grpc:grpc-netty-shaded:1.73.0")
+  implementation("io.grpc:grpc-kotlin-stub:1.4.3")
+  implementation("io.grpc:grpc-util:1.73.0")
+  implementation("io.perfmark:perfmark-api:0.27.0")
+
   intellijPlatform {
-    intellijIdeaCommunity("2025.1")
+    intellijIdeaCommunity("2025.1.3")
 
     bundledPlugin("com.intellij.java")
-    plugin("org.intellij.scala", "2025.1.20")
-
-    instrumentationTools()
+    plugin("org.intellij.scala", "2025.1.27")
   }
-  implementation("com.google.protobuf:protobuf-java:3.25.3")
-  implementation("com.google.protobuf:protobuf-java-util:3.25.3")
-  implementation("com.google.protobuf:protobuf-kotlin:3.25.3")
-  implementation("com.google.guava:guava:33.1.0-jre")
-
-  implementation("io.grpc:grpc-services:1.53.0")
-  implementation("io.grpc:grpc-netty-shaded:1.53.0")
-  implementation("io.grpc:grpc-kotlin-stub:1.3.0")
-
-  // https://mvnrepository.com/artifact/io.perfmark/perfmark-api
-  implementation("io.perfmark:perfmark-api:0.27.0")
 }
+
+intellijPlatform {
+  pluginConfiguration {
+    version = "0.0.9"
+
+    ideaVersion {
+      sinceBuild = "251"
+      untilBuild = "251.*"
+    }
+  }
+
+  signing {
+    certificateChain = System.getenv("CERTIFICATE_CHAIN")
+    privateKey = System.getenv("PRIVATE_KEY")
+    password = System.getenv("PRIVATE_KEY_PASSWORD")
+  }
+
+  publishing {
+    token = System.getenv("PUBLISH_TOKEN")
+  }
+}
+
+//// Configure Gradle IntelliJ Plugin
+//// Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
+//intellij {
+//  version.set("2023.2")
+//  type.set("IC") // Target IDE Platform
+//
+//  plugins.set(listOf("com.intellij.java", "org.intellij.scala:2023.2.17"))
+//}
 
 tasks {
   // Set the JVM compatibility versions
   withType<JavaCompile> {
-    sourceCompatibility = "21"
-    targetCompatibility = "21"
+    sourceCompatibility = "19"
+    targetCompatibility = "19"
   }
-  withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.jvmTarget = "21"
-  }
+//  withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+//    kotlinOptions.jvmTarget = "17"
+//  }
 
   jar {
 
-  }
-
-  patchPluginXml {
-    version = "0.0.13"
-    sinceBuild.set("251")
-    untilBuild.set("251.*")
-  }
-
-  signPlugin {
-    certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
-    privateKey.set(System.getenv("PRIVATE_KEY"))
-    password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
-  }
-
-  publishPlugin {
-    token.set(System.getenv("PUBLISH_TOKEN"))
   }
 }
