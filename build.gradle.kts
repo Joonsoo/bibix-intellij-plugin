@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.giyeok.bibix"
-version = "0.0.9"
+version = "0.1.0"
 
 sourceSets {
   getByName("main") {
@@ -51,7 +51,7 @@ dependencies {
 
 intellijPlatform {
   pluginConfiguration {
-    version = "0.0.9"
+    version = "0.1.0"
 
     ideaVersion {
       sinceBuild = "251"

@@ -3,7 +3,7 @@
     <id>com.github.joonsoo.bibixintellijplugin</id>
     <name>BibixIntellijPlugin</name>
     <vendor>joonsoo</vendor>
-    <version>0.0.9</version>
+    <version>0.1.0</version>
 
     <depends>com.intellij.modules.java</depends>
     <depends>org.intellij.scala</depends>
